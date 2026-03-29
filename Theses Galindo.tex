@@ -1,0 +1,2299 @@
+% ============================================================
+%  ON THE CONVERGENCE OF THE ORTHOGONAL SPECTRAL SEQUENCE
+%  César Galindo  –  IHES-style LaTeX  (English translation)
+%  Original: Tesis doctoral, UNAM, October 2022
+%  Director: Dr. José Pablo Peláez Menaldo
+%            Chebyshev Laboratory, St.\ Petersburg State University / IMATE-CU
+% ============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------------------------
+% IHES-style packages
+% ------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% Mathematics
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{stmaryrd}          % \llbracket, \rrbracket
+\usepackage{mathrsfs}          % \mathscr
+
+% Adjoint pair arrow (amssymb)
+\providecommand{\rightleftarrows}{%
+  \mathrel{\rightarrow\mkern-14mu\leftarrow}}
+
+% Layout  (IHES: generous margins, single column)
+\usepackage[top=3cm, bottom=3cm, left=3.2cm, right=3.2cm]{geometry}
+
+% Cross-references & hyperlinks
+\usepackage[colorlinks=true,
+            linkcolor=blue!60!black,
+            citecolor=green!50!black,
+            urlcolor=blue!70!black]{hyperref}
+\usepackage{cleveref}
+
+% Diagrams
+\usepackage{tikz-cd}
+\usepackage{tikz}
+\usetikzlibrary{arrows,calc,patterns,decorations.pathmorphing}
+
+% Enumeration
+\usepackage{enumitem}
+
+% Header / footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\thepage}
+\fancyhead[LO]{\small\itshape On the Convergence of the Orthogonal Spectral Sequence}
+\fancyhead[RE]{\small\itshape C.\ Galindo}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Spacing
+\usepackage{setspace}
+\setstretch{1.08}
+
+% ------------------------------------------------------------------
+% THEOREM ENVIRONMENTS  (IHES style: definition font for statements)
+% ------------------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
+
+% ------------------------------------------------------------------
+% MACROS
+% ------------------------------------------------------------------
+% Categories
+\newcommand{\Ab}{\mathbf{Ab}}
+\newcommand{\Sm}{\mathrm{Sm}}
+\newcommand{\Sch}{\mathrm{Sch}}
+\newcommand{\Cor}{\mathrm{Cor}}
+\newcommand{\PST}{\mathit{PST}}
+\newcommand{\DM}{\mathit{DM}}
+\newcommand{\DMeff}{DM^{\mathrm{eff}}_{-}}
+\newcommand{\DMgm}{DM_{\mathrm{gm}}}
+\newcommand{\DMeffgm}{\widehat{DM}^{\mathrm{eff}}_{\mathrm{gm}}}
+\newcommand{\SH}{\mathcal{SH}}
+\newcommand{\SHeff}{\mathcal{SH}^{\mathrm{eff}}}
+\newcommand{\ShvNis}{\mathrm{Shv}_{\mathrm{Nis}}}
+\newcommand{\PreShv}{\mathrm{PreShv}}
+
+% Functors / operations
+\newcommand{\bc}{bc}
+\newcommand{\hocolim}{\operatorname*{hocolim}}
+\newcommand{\colim}{\operatorname*{colim}}
+\newcommand{\holim}{\operatorname*{holim}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Ext}{\operatorname{Ext}}
+\newcommand{\id}{\mathrm{id}}
+
+% Graded pieces / filtration
+\newcommand{\Gr}{\mathrm{Gr}}
+\newcommand{\CH}{\mathrm{CH}}
+
+% Spectral sequence terms
+\newcommand{\Einf}{E_{\infty}}
+
+% Number fields
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\Gm}{\mathbb{G}_m}
+
+% Orthogonal complement
+\newcommand{\DMperp}[1]{DM^{\perp}(#1)}
+
+% ------------------------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------------------------
+%  TITLE PAGE
+% ------------------------------------------------------------------
+\thispagestyle{empty}
+
+\begin{center}
+
+\vspace*{1.5cm}
+
+{\Large\bfseries
+ON THE CONVERGENCE OF THE\\[4pt]
+ORTHOGONAL SPECTRAL SEQUENCE
+}
+
+\vspace{1.8cm}
+
+{\large César Galindo}
+
+\vspace{0.4cm}
+
+{\normalsize
+Instituto de Matemáticas, UNAM\\
+Av.\ Universidad s/n, Ciudad de México\\
+Chebyshev Laboratory, St.\ Petersburg State University
+}
+
+\vspace{2cm}
+
+\begin{tabular}{rl}
+\textit{Advisor:} &
+Dr.\ José Pablo Peláez Menaldo \\[2pt]
+& \small Chebyshev Laboratory, St.\ Petersburg State University \\[2pt]
+& \small \url{https://chebyshev.spbu.ru/en/people/jose-pablo-pelaez-menaldo/} \\[8pt]
+
+\textit{Committee:} &
+Dr.\ Enrique Javier Elizondo Huerta (IMATE--CU) \\[2pt]
+&
+Dr.\ Felipe de Jesús Zaldívar Cruz (UAM--Iztapalapa)
+\end{tabular}
+
+\vspace{2cm}
+
+{\normalsize
+Doctoral Thesis — Universidad Nacional Autónoma de México\\
+October 2022
+}
+
+\end{center}
+
+\newpage
+
+% ------------------------------------------------------------------
+%  ABSTRACT
+% ------------------------------------------------------------------
+\begin{abstract}
+\noindent
+One of the central theorems in Algebraic Geometry is the Néron–Severi theorem, which
+asserts that for a smooth projective variety $X$ over an algebraically closed field,
+the group $\CH^1(X)/\CH^1_{\mathrm{num}}(X)$ is finitely generated.  Motivated by
+this, Bloch, Beilinson, and Murre independently introduced a conjectural filtration
+on the higher Chow groups $\CH^r(X)$, $r>1$.  To study finite filtrations on these
+groups, Peláez introduced in~\cite{Pel17} a tower of triangulated functors
+$bc_{\leq\bullet}$ in the Voevodsky category of mixed motives $DM$ and associated a
+spectral sequence
+\[
+  E^1_{p,q} = \Hom_{DM}\!\bigl(B,\,(bc_{p/p-1}A)[q-p]\bigr)
+  \;\Rightarrow\; \Hom_{DM}(B,A).
+\]
+The main object of this thesis is to study the convergence of this \emph{orthogonal
+spectral sequence}.  The main result (Theorem~\ref{thm:main}) shows that this
+spectral sequence converges strongly when $B = M(X)(r)[s]$, with $r,s\in\Z$ and $X$
+any smooth scheme of finite type over $k$.  We also show that the analogous result
+fails in the $\mathbb{A}^1$-stable homotopy category $\SH$ of Morel–Voevodsky
+(Proposition~\ref{prop:counterexample}), and we identify conditions on $A\in\SH$
+under which strong convergence holds (Proposition~\ref{prop:SHconvergence}).  As a
+direct consequence, we obtain a spectral sequence that converges strongly at the
+$E_1$-term of the Voevodsky slice spectral sequence
+(Corollary~\ref{cor:sliceconv}).
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ==================================================================
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+% ==================================================================
+
+One of the central theorems in Algebraic Geometry is the \emph{Néron–Severi theorem}
+\cite{Sev34,Ner52a,Ner52b}: for a smooth projective variety $X$ over an algebraically
+closed field, the group $\CH^1(X)/\CH^1_{\mathrm{num}}(X)$ is finitely generated,
+where $\CH^1(X)$ is the group of algebraic cycles of codimension~$1$ modulo rational
+equivalence and $\CH^1_{\mathrm{num}}(X)$ is the subgroup of numerically trivial
+cycles.  Since $\CH^1_{\mathrm{num}}(X)$ is the group of rational points of the Picard
+variety of $X$ (an abelian variety), this result decomposes $\CH^1(X)$ into a
+continuous component — parametrised by an abelian variety — and a discrete component
+$\CH^1(X)/\CH^1_{\mathrm{num}}(X)$ which is a finitely generated abelian group.
+
+Motivated by this, the expectation was that for the higher Chow groups $\CH^r(X)$,
+$r>1$, there would similarly exist a subgroup parametrised by some naturally associated
+algebraic variety such that the quotient was finitely generated.  However, this was
+dashed by Mumford~\cite{Mum69}, who proved that for a surface $S$ with
+$\dim H^0(S,\Omega_S^2)>0$, the group of zero cycles $\CH^2(S)$ is ``enormous'' and
+in particular admits no such parametrisation.
+
+This led experts to conclude that the Chow groups $\CH^r(X)$ for $r>1$ are in
+general chaotic.  Nevertheless, in the late 1970s Bloch, Beilinson, and Murre
+independently introduced~\cite{Blo80,Bei87,Mur93} a conjectural programme in which the
+algebraic cycle groups $\CH^r(X)$, $r>1$, have accessible properties.  The central
+piece of this programme is the existence of a filtration on $\CH^r(X)$ whose
+associated graded pieces have accessible properties.
+
+In order to study finite filtrations on the Chow groups of a smooth projective variety
+$Y$ over a field $k$ satisfying some properties of the (still conjectural)
+Bloch–Beilinson–Murre filtration, Peláez introduced in~\cite{Pel14} a tower of
+triangulated functors $bc_{\leq\bullet}$:
+\[
+  \cdots \to bc_{\leq n-1} \to bc_{\leq n} \to bc_{\leq n+1} \to \cdots
+\]
+in the Voevodsky triangulated category of mixed motives $DM$.  The filtration on the
+Chow groups with coefficients in a commutative ring $R$ is defined by evaluating the
+orthogonal tower $bc_{\leq\bullet}$ on the motive of a point $\Z_R$ and then
+considering morphisms $M(Y)(-q)[-2q] \to bc_{\leq\bullet}(\Z_R)$, where $M(Y)$ is
+the motive of $Y$ and $(-q)$ (resp.\ $[-2q]$) denotes the Tate twist in $DM$
+(resp.\ the suspension in $DM$).  The previous process provides a filtration on the
+Chow groups since
+\[
+  \CH^q(Y)_R \cong \Hom_{DM}\!\bigl(M(Y)(-q)[-2q],\,\Z_R\bigr).
+\]
+
+Given $A, B \in DM$, it is possible to evaluate the tower on $A$ and then map $B$
+into $bc_{\leq\bullet}(A)$ to obtain a spectral sequence:
+\begin{equation}\label{eq:SS}
+  E^1_{p,q} = \Hom_{DM}\!\bigl(B,\,(bc_{p/p-1}A)[q-p]\bigr)
+  \;\Rightarrow\; \Hom_{DM}(B,A),
+\end{equation}
+where $bc_{p/p-1}A$ is defined in terms of a canonical distinguished triangle in
+$DM$ (\cite{Pel17}, 3.2.8):
+\[
+  bc_{\leq p-1}A \to bc_{\leq p}A \to bc_{p/p-1}A.
+\]
+
+The main goal of this thesis is to study convergence properties of this spectral
+sequence.  The main result (Theorem~\ref{thm:main}) shows that the spectral
+sequence~\eqref{eq:SS} converges strongly for $B = M(X)(r)[s]$, with $r,s\in\Z$
+and $X$ any smooth scheme of finite type over $k$.
+
+We also show that the analogous results fail in the $\mathbb{A}^1$-stable homotopy
+category of Morel–Voevodsky $\SH$, providing explicit counterexamples
+(Proposition~\ref{prop:counterexample} and Corollary~\ref{cor:counterexample2}).
+On the other hand, we verify that, under appropriate conditions on $A\in\SH$, the
+spectral sequence is strongly convergent
+(Proposition~\ref{prop:SHconvergence}), and that these conditions are satisfied
+for the Voevodsky slices $s_mG\in\SH$.  As a direct consequence, we obtain a
+spectral sequence strongly convergent at the $E_1$ term of the Voevodsky slice
+spectral sequence (Corollary~\ref{cor:sliceconv}).
+
+% ==================================================================
+\section{Preliminaries}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{Triangulated categories}
+% ------------------------------------------------------------------
+
+The main references for this section are~\cite{Nee96,BBD}.
+
+Let $\mathcal{A}$ be an additive category equipped with an autoequivalence
+$\Sigma:\mathcal{A}\to\mathcal{A}$ of categories.  For every integer $n\in\Z$ and
+every object $X$ (resp.\ morphism $f$) of $\mathcal{A}$, we define
+$X[n]:=\Sigma^n(X)$ (resp.\ $f[n]=\Sigma^n(f)$).
+
+\begin{definition}[Verdier]\label{def:triangulated}
+Let $\mathcal{A}$ be an additive category.  The structure of a \emph{triangulated
+category} is given by an autoequivalence $\Sigma=[1]:\mathcal{A}\to\mathcal{A}$,
+called the \emph{translation functor}, and a class of diagrams in $\mathcal{A}$.
+A \emph{triangle} of $(\mathcal{A},\Sigma)$ is a sequence of morphisms
+\[
+  X \xrightarrow{u} Y \xrightarrow{v} Z \xrightarrow{w} X[1].
+\]
+A morphism between distinguished triangles is a triple $(f,g,h)$ of morphisms of
+$\mathcal{A}$ making the following diagram commute:
+\[
+\begin{tikzcd}
+  X \ar[r,"u"] \ar[d,"f"] & Y \ar[r,"v"] \ar[d,"g"] & Z \ar[r,"w"] \ar[d,"h"] & X[1] \ar[d,"f{[1]}"]\\
+  X' \ar[r,"u'"] & Y' \ar[r,"v'"] & Z' \ar[r,"w'"] & X'[1].
+\end{tikzcd}
+\]
+Such a triple $(f,g,h)$ is an isomorphism if the vertical arrows are isomorphisms.
+We require the distinguished triangles to satisfy the following axioms:
+\begin{enumerate}[label=\textup{(TR\arabic*)}]
+  \item\label{TR1}
+    \begin{enumerate}[label=(\alph*)]
+      \item Every triangle of the form $X\xrightarrow{1_X} X\to 0\to X[1]$ is
+        distinguished.
+      \item Every triangle isomorphic to a distinguished triangle is distinguished.
+      \item For every morphism $f:X\to Y$ in $\mathcal{A}$, there exists a
+        distinguished triangle of the form
+        $X\xrightarrow{f} Y \to Z \to X[1]$.
+    \end{enumerate}
+  \item\label{TR2}
+    A triangle $X\xrightarrow{u} Y\xrightarrow{v} Z\xrightarrow{w} X[1]$ is
+    distinguished if and only if
+    $Y\xrightarrow{v} Z\xrightarrow{-w} X[1]\xrightarrow{-\Sigma u} Y[1]$
+    is distinguished.
+  \item\label{TR3}
+    Suppose we have a commutative diagram of distinguished triangles with vertical
+    arrows $f$ and $g$.  Then there exists (not necessarily unique) an arrow
+    $h:Z\to Z'$ making the full diagram commute.
+  \item\label{TR4} \textbf{Octahedral axiom.}
+    (We refer to~\cite{BBD} for the precise statement.)
+\end{enumerate}
+\end{definition}
+
+\begin{note}\label{note:opposite}
+If $\mathcal{T}=(\mathcal{A},\Sigma)$ is a triangulated category, then
+$\mathcal{T}^{op}=(\mathcal{A}^{op},\Sigma^{-1})$ is also a triangulated category.
+\end{note}
+
+\begin{proposition}\label{prop:coproducts}
+Let $\mathcal{T}$ be a triangulated category.  Suppose $\{X_\lambda\}_{\lambda\in\Lambda}$
+is a set of objects of $\mathcal{T}$ and that the coproduct
+$\coprod_{\lambda\in\Lambda} X_\lambda$ exists in $\mathcal{T}$.  Then the natural map
+\[
+  \coprod_{\lambda\in\Lambda} X_\lambda[1]
+  \longrightarrow
+  \Bigl(\coprod_{\lambda\in\Lambda} X_\lambda\Bigr)[1]
+\]
+is an isomorphism.
+\end{proposition}
+
+\begin{definition}\label{def:homological}
+Let $\mathcal{T}$ be a triangulated category and $\mathcal{A}$ an abelian category.
+A functor $H:\mathcal{T}\to\mathcal{A}$ is \emph{homological} if for each
+distinguished triangle $X\xrightarrow{u} Y\xrightarrow{v} Z\xrightarrow{w} X[1]$
+the sequence $H(X)\xrightarrow{H(u)} H(Y)\xrightarrow{H(v)} H(Z)$ is exact in
+$\mathcal{A}$.
+\end{definition}
+
+By axiom~\ref{TR2} the sequence extends to a long exact sequence in both directions:
+\[
+  \cdots\to H(Z[-1])\xrightarrow{H(w[-1])} H(X)\xrightarrow{H(u)} H(Y)
+  \xrightarrow{H(v)} H(Z)\xrightarrow{H(w)} H(X[1])\to\cdots
+\]
+
+\begin{note}
+A homological functor on $\mathcal{T}^{op}$ is a \emph{cohomological functor} on
+$\mathcal{T}$.
+\end{note}
+
+\begin{lemma}\label{lem:Hom-homological}
+Let $\mathcal{T}$ be a triangulated category and $U$ an object of $\mathcal{T}$.
+The functor $\Hom(U,-):\mathcal{T}\to\Ab$ is homological.
+\end{lemma}
+
+\begin{proof}
+Let $X\xrightarrow{u} Y\xrightarrow{v} Z\xrightarrow{w} X[1]$ be a distinguished
+triangle.  We need exactness at $\Hom(U,Y)$.  First, $vu=0$: by~\ref{TR1}(a) and
+\ref{TR3} applied to the canonical triangle $X\xrightarrow{\id}X\to 0\to X[1]$ and
+our triangle, we obtain a morphism $h:U\to X$ (via the map $U\to 0$) with $h=0$, and
+the commutative square forces $vu=0$.  For exactness, if $vf=0$ then by~\ref{TR2}
+and~\ref{TR3} one constructs $h:U\to X$ with $uh=f$; see~\cite{BBD} for details.
+\end{proof}
+
+\begin{note}
+It follows that $\Hom(-,U):\mathcal{T}^{op}\to\Ab$ is cohomological.
+\end{note}
+
+\begin{proposition}\label{prop:TC-properties}
+Let $\mathcal{T}$ be a triangulated category and $(f,g,h)$ a morphism of triangles.
+\begin{enumerate}
+  \item If two of the three vertical morphisms are isomorphisms, so is the third.
+  \item If $X\xrightarrow{u} Y\xrightarrow{v} Z\xrightarrow{0} X[1]$ is a
+    distinguished triangle, then $u$ is an isomorphism if and only if $Z\cong 0$.
+  \item Every triangle of the form $X\to Y\to Z\xrightarrow{0} X[1]$ is isomorphic
+    to $X\to X\oplus Z\to Z\xrightarrow{0} X[1]$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+See~\cite{BBD}, IV~\S1.
+\end{proof}
+
+\begin{definition}\label{def:tensor-structure}
+A \emph{tensor structure} on an additive category $\mathcal{A}$ is given by a
+bifunctor $\otimes:\mathcal{A}\times\mathcal{A}\to\mathcal{A}$ which is associative,
+commutative and unital; that is, there is a unit object $1$ and isomorphisms
+$X\otimes(Y\otimes Z)\xrightarrow{\sim}(X\otimes Y)\otimes Z$,
+$X\otimes Y\xrightarrow{\sim} Y\otimes X$, $1\otimes X\xrightarrow{\sim} X$,
+$X\otimes 1\xrightarrow{\sim} X$, making the obvious diagrams commute.
+\end{definition}
+
+\begin{definition}\label{def:graded-tensor}
+If $\mathcal{A}$ has a translation $X\mapsto\Sigma X$, the tensor structure is
+\emph{graded} if
+\begin{enumerate}
+  \item $\Sigma\circ(-\otimes-) = \Sigma(-)\otimes-$ and
+    $\Sigma^2(-)\otimes-= -\otimes\Sigma^2(-)$ as functors
+    $\mathcal{A}\times\mathcal{A}\to\mathcal{A}$.
+  \item The natural isomorphisms
+    $X\otimes\Sigma Y\cong\Sigma X\otimes Y=\Sigma(X\otimes Y)=\Sigma X\otimes Y$
+    satisfy the condition that the composition
+    $X\otimes\Sigma^2 Y\to X\otimes\Sigma^2 Y$ is the identity.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}\label{def:tensor-triangulated}
+A \emph{tensor triangulated category} is a triangulated category
+$\mathcal{T}$ which is also a tensor category (with $\otimes$ graded) such that for
+each distinguished triangle
+$X\xrightarrow{u} Y\xrightarrow{v} Z\xrightarrow{w} X[1]$
+and every $W\in\mathcal{T}$, the sequence
+\[
+  X\otimes W\xrightarrow{u\otimes\id_W} Y\otimes W
+  \xrightarrow{v\otimes\id_W} Z\otimes W
+  \xrightarrow{w\otimes\id_W} X[1]\otimes W = (X\otimes W)[1]
+\]
+is a distinguished triangle.
+\end{definition}
+
+\begin{definition}\label{def:triangulated-functor}
+Let $(\mathcal{T},\Sigma)$ and $(\mathcal{T}',\Sigma')$ be triangulated categories.
+An additive functor $F:\mathcal{T}\to\mathcal{T}'$ is \emph{triangulated} if there
+is a natural isomorphism $F\circ\Sigma\cong\Sigma'\circ F$ such that for every
+distinguished triangle $X\xrightarrow{u}Y\xrightarrow{v}Z\xrightarrow{w}X[1]$
+in $\mathcal{T}$, the triangle
+$FX\xrightarrow{u}FY\xrightarrow{v}FZ\xrightarrow{w}F(X[1])$ is distinguished in
+$\mathcal{T}'$.
+\end{definition}
+
+\begin{definition}\label{def:triangulated-subcategory}
+A \emph{triangulated subcategory} of $\mathcal{T}$ is a subcategory
+$\iota:\mathcal{S}\subset\mathcal{T}$ with the structure of a triangulated category
+such that the inclusion functor $\iota$ is triangulated.
+\end{definition}
+
+\begin{proposition}\label{prop:adjoint-triangulated}
+Let $\mathcal{T}$ and $\mathcal{T}'$ be triangulated categories, and consider an
+adjoint pair of functors where $F$ is the left adjoint:
+\[
+\mathcal{T}\;\overset{F}{\underset{G}{\rightleftarrows}}\;\mathcal{T}'.
+\]
+Then $F$ is triangulated if and only if $G$ is triangulated.
+\end{proposition}
+\begin{proof}
+See~\cite{Nee01}, Lem.\ 5.3.6.
+\end{proof}
+
+\begin{proposition}\label{prop:full-subcategory}
+If $\mathcal{S}\subset\mathcal{T}$ is a full subcategory of a triangulated category
+$\mathcal{T}$, then $\mathcal{S}$ is a triangulated subcategory if and only if it is
+invariant under the translation functor and for every distinguished triangle
+$X\to Y\to Z\to X[1]$ in $\mathcal{T}$ with $X,Y\in\mathcal{S}$, the object $Z$ is
+isomorphic to an object in $\mathcal{S}$.
+\end{proposition}
+
+% ------------------------------------------------------------------
+\subsubsection{Verdier localisation}
+
+\begin{definition}\label{def:kernel}
+Let $F:\mathcal{D}\to\mathcal{T}$ be a triangulated functor.  The \emph{kernel} of
+$F$ is the full subcategory $\mathcal{C}=\{X\in\mathcal{D}: F(X)\cong 0\}$.
+\end{definition}
+
+\begin{proposition}\label{prop:kernel-properties}
+The kernel of a triangulated functor $F:\mathcal{D}\to\mathcal{T}$ satisfies:
+\begin{enumerate}
+  \item $\mathcal{C}$ is a triangulated subcategory of $\mathcal{D}$.
+  \item If $X\oplus Y\in\mathcal{C}$, then $X,Y\in\mathcal{C}$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+See~\cite{Nee01}, Lem.\ 2.1.4 and Lem.\ 2.1.5.
+\end{proof}
+
+\begin{definition}\label{def:thick}
+A full triangulated subcategory $\mathcal{C}$ of a triangulated category $\mathcal{D}$
+is \emph{thick} if $\mathcal{C}$ is closed under direct summands.
+\end{definition}
+
+\begin{theorem}[Verdier~\cite{Ver77}]\label{thm:Verdier-localisation}
+Let $\mathcal{T}$ be a small triangulated category and $\mathcal{C}\subset\mathcal{T}$
+a triangulated subcategory.  There exists a triangulated category $\mathcal{T}/\mathcal{C}$
+and a triangulated functor $\mathcal{Q}_\mathcal{C}:\mathcal{T}\to\mathcal{T}/\mathcal{C}$
+such that, for every triangulated functor $F:\mathcal{T}\to\mathcal{T}'$ with
+$\mathcal{C}$ contained in the kernel of $F$, there exists a unique triangulated
+functor $\bar{F}:\mathcal{T}/\mathcal{C}\to\mathcal{T}'$ making the diagram commute.
+The canonical map $\mathcal{Q}_\mathcal{C}$ is called \emph{Verdier localisation} and
+the category $\mathcal{T}/\mathcal{C}$ is also written $\mathcal{T}[\mathcal{C}^{-1}]$.
+\end{theorem}
+
+% ------------------------------------------------------------------
+\subsubsection{Bousfield localisation}
+
+\begin{definition}\label{def:Bousfield-loc}
+Let $\mathcal{T}$ be a triangulated category and $\mathcal{S}\subset\mathcal{T}$ a
+thick subcategory.  A \emph{Bousfield localisation functor exists for
+$\mathcal{S}\subset\mathcal{T}$} if there exists a right adjoint to the natural
+functor $F:\mathcal{T}\to\mathcal{T}/\mathcal{S}$.  When this is the case, we call
+the right adjoint the \emph{Bousfield localisation functor} and denote it
+$G:\mathcal{T}/\mathcal{S}\to\mathcal{T}$.
+\end{definition}
+
+\begin{note}\label{note:S-local}
+If $\mathcal{S}\subset\mathcal{T}$ is thick and a Bousfield localisation exists, then
+by adjunction $\Hom_\mathcal{T}(S,GT)=0$ for every $S\in\mathcal{S}$.
+\end{note}
+
+\begin{definition}\label{def:S-local}
+An object $T\in\mathcal{T}$ is \emph{$\mathcal{S}$-local} if
+$\Hom_\mathcal{T}(S,T)=0$ for every $S\in\mathcal{S}$.
+\end{definition}
+
+\begin{proposition}\label{prop:Bousfield-exists}
+Let $\mathcal{S}$ be a thick subcategory of a triangulated category $\mathcal{T}$.  A
+Bousfield localisation exists for $\mathcal{S}\subset\mathcal{T}$ if and only if the
+inclusion $\mathcal{S}\hookrightarrow\mathcal{T}$ admits a right adjoint.
+\end{proposition}
+\begin{proof}
+\cite{Nee01}, Prop.\ 9.1.18.
+\end{proof}
+
+\begin{proposition}\label{prop:Bousfield-triangle}
+Suppose a Bousfield localisation functor $G:\mathcal{T}/\mathcal{S}\to\mathcal{T}$
+exists.  For $T\in\mathcal{T}$ there is a distinguished triangle
+\[
+  T_\mathcal{S} \longrightarrow T \xrightarrow{\eta_T} GT \longrightarrow T_\mathcal{S}[1]
+\]
+in which $(1)$ $GT$ is $\mathcal{S}$-local and $(2)$ $T_\mathcal{S}\in\mathcal{S}$.
+\end{proposition}
+
+% ------------------------------------------------------------------
+\subsection{Neeman's adjoint functor theorem}
+
+\begin{definition}\label{def:compactly-generated}
+Let $\mathcal{T}$ be a triangulated category admitting coproducts.
+\begin{enumerate}
+  \item An object $U\in\mathcal{T}$ is \emph{compact} if
+    $\Hom_\mathcal{T}(U,\coprod_\lambda X_\lambda)
+    =\coprod_\lambda\Hom_\mathcal{T}(U,X_\lambda)$
+    for every coproduct of objects in $\mathcal{T}$.
+  \item $\mathcal{T}$ is \emph{compactly generated} if there exists a set
+    $\mathcal{U}$ of compact objects such that if
+    $\Hom_\mathcal{T}(U,X)=0$ for every $U\in\mathcal{U}$, then $X=0$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}\label{def:hocolim}
+Let $\mathcal{T}$ be a triangulated category admitting coproducts and
+$X_0\to X_1\to X_2\to\cdots$ a sequence in $\mathcal{T}$.  The
+\emph{homotopy colimit} $\hocolim X_i$ is defined (up to non-canonical isomorphism)
+by the distinguished triangle
+\[
+  \coprod_i X_i \xrightarrow{\,\id-s\,} \coprod_i X_i \longrightarrow \hocolim X_i
+  \longrightarrow \Bigl(\coprod_i X_i\Bigr)[1],
+\]
+where $s:X_{i_0}\to X_{i_0+1}\to\coprod_i X_i$ is the composition into the factor
+$X_{i_0+1}$.
+\end{definition}
+
+\begin{proposition}\label{prop:compact-hocolim}
+Let $U$ be a compact object in a triangulated category $\mathcal{T}$ admitting
+coproducts.  If $X_0\to X_1\to\cdots$ is a sequence in $\mathcal{T}$, then
+\[
+  \Hom_\mathcal{T}(U,\hocolim X_i) = \colim\Hom_\mathcal{T}(U,X_i).
+\]
+\end{proposition}
+\begin{proof}
+\cite{Nee96}, Lem.\ 2.8.
+\end{proof}
+
+\begin{theorem}[Brown representability~\cite{Nee96}]\label{thm:Brown}
+Let $\mathcal{T}$ be a compactly generated triangulated category and
+$H:\mathcal{T}^{op}\to\Ab$ a cohomological functor sending coproducts to products.
+Then $H$ is representable.
+\end{theorem}
+
+\begin{theorem}[Neeman's adjoint functor theorem~\cite{Nee96}, Thm.\ 4.1]\label{thm:Neeman}
+Let $\mathcal{S}$ be a compactly generated triangulated category and $\mathcal{T}$
+any triangulated category.  Let $F:\mathcal{S}\to\mathcal{T}$ be a triangulated
+functor respecting coproducts.  Then $F$ has a right adjoint
+$G:\mathcal{T}\to\mathcal{S}$.
+\end{theorem}
+
+% ------------------------------------------------------------------
+\subsection{The derived category and derived functors}
+
+\begin{definition}\label{def:complex}
+Let $\mathcal{A}$ be an additive category.  A \emph{complex} $A^\bullet$ in
+$\mathcal{A}$ is a diagram
+\[
+  A^\bullet:\quad\cdots\longrightarrow A^{n-1}\xrightarrow{d^{n-1}} A^n
+  \xrightarrow{d^n} A^{n+1}\xrightarrow{d^{n+1}}\cdots
+\]
+with $d^n\circ d^{n-1}=0$ for all $n\in\Z$.  It is \emph{bounded} if
+$A^n=0$ for $|n|\gg 0$; \emph{bounded below} if $A^n=0$ for $n\ll 0$;
+\emph{bounded above} if $A^n=0$ for $n\gg 0$.
+\end{definition}
+
+\begin{definition}\label{def:derived}
+Let $\mathcal{A}$ be an abelian category.  Setting
+$\mathcal{S}=\{A^\bullet: H^n(A^\bullet)=0\text{ for all }n\in\Z\}$
+(the acyclic complexes), $\mathrm{Mor}_\mathcal{S}$ consists of all quasi-isomorphisms
+and the \emph{derived category} of $\mathcal{A}$ is
+\[
+  D(\mathcal{A}) = K(\mathcal{A})[\mathcal{S}^{-1}]
+\]
+in the sense of Theorem~\ref{thm:Verdier-localisation}.
+\end{definition}
+
+\begin{proposition}\label{prop:Ext-Hom}
+Let $\mathcal{A}$ be an abelian category with enough injectives.  For $X,Y\in\mathcal{A}$,
+\[
+  \Hom_{D(\mathcal{A})}(X,Y[i]) =
+  \begin{cases}
+    \Ext^i_\mathcal{A}(X,Y) & i\geq 0,\\
+    0 & i<0.
+  \end{cases}
+\]
+\end{proposition}
+
+% ------------------------------------------------------------------
+\subsection{Spectral sequences}
+\label{subsec:spectral-sequences}
+
+We follow Boardman's article~\cite{Boa99} closely and supplement it with complete
+proofs and diagrams.  The key novelty with respect to classical accounts is the
+systematic use of the limit groups $D^\infty$ and $D^{-\infty}$ as the natural
+targets for convergence.
+
+% ------------------------------------------------------------------
+\subsubsection{Basic definitions}
+
+\begin{definition}\label{def:spectral-sequence}
+A \emph{(bigraded cohomological) spectral sequence} is a collection of data:
+\begin{enumerate}
+  \item abelian groups $E_r^{pq}$ for all $r\geq 1$ and $p,q\in\Z$;
+  \item morphisms $d_r^{pq}:E_r^{pq}\to E_r^{p+r,q-r+1}$ with $(d_r)^2=0$;
+  \item isomorphisms $E_{r+1}^{pq}\cong H^{pq}(E_r^{**},d_r)
+    :=\ker d_r^{pq}\big/\operatorname{im} d_r^{p-r,q+r-1}$.
+\end{enumerate}
+The integer $n=p+q$ is the \emph{total degree}, $p$ the \emph{filtration degree},
+and $q$ the \emph{complementary degree}.
+\end{definition}
+
+For each fixed $(p,q)$ we have a nested sequence of subgroups of $E_1^{pq}$:
+\[
+  0 = B_1^{pq} \subset B_2^{pq} \subset \cdots \subset B_r^{pq}
+  \subset \cdots \subset Z_r^{pq} \subset \cdots \subset Z_2^{pq}
+  \subset Z_1^{pq} = E_1^{pq},
+\]
+where $Z_r^{pq}=\ker(d_r^{pq}:E_r^{pq}\to E_r^{p+r,q-r+1})$ and
+$B_r^{pq}=\operatorname{im}(d_r^{p-r,q+r-1}:E_r^{p-r,q+r-1}\to E_r^{pq})$
+are the \emph{cycles} and \emph{boundaries} at stage $r$, viewed as subgroups
+of $E_1^{pq}$ via the successive isomorphisms.
+
+\begin{definition}\label{def:infinite-terms}
+The \emph{infinite cycles} and \emph{infinite boundaries} are
+\[
+  Z_\infty^{pq} = \bigcap_{r\geq 1} Z_r^{pq},\qquad
+  B_\infty^{pq} = \bigcup_{r\geq 1} B_r^{pq},
+\]
+and the \emph{$E_\infty$-term} is the sub-quotient
+$E_\infty^{pq} = Z_\infty^{pq}/B_\infty^{pq}$.
+\end{definition}
+
+\begin{definition}\label{def:filtration}
+Let $H$ be an abelian group.  A \emph{decreasing filtration} of $H$ is a sequence
+of subgroups
+\[
+  \cdots\subset F^{p+1}H\subset F^pH\subset\cdots\subset H,\quad p\in\Z.
+\]
+Write $F^\infty H:=\bigcap_p F^pH$ and $F^{-\infty}H:=\bigcup_p F^pH$.
+The filtration is:
+\begin{itemize}
+  \item \emph{exhaustive} if $F^{-\infty}H=H$;
+  \item \emph{separated} (or Hausdorff) if $F^\infty H=0$;
+  \item \emph{complete} if $R^1\!\varprojlim_p F^pH=0$, equivalently
+    $H\xrightarrow{\sim}\varprojlim_p H/F^pH$.
+\end{itemize}
+The \emph{$p$-th graded piece} is $\Gr_F^p H = F^pH/F^{p+1}H$.
+\end{definition}
+
+\begin{definition}\label{def:convergence}
+Let $E_r^{pq}$ be a spectral sequence and $(H^*,F^*)$ a filtered graded abelian
+group.  The spectral sequence \emph{abuts to} (or \emph{converges to})
+$(H^*,F^*)$ if there are isomorphisms
+\[
+  E_\infty^{pq} \xrightarrow{\;\sim\;} \Gr_F^p H^{p+q}
+\]
+for every $(p,q)$.  One writes $E_1^{pq}\Rightarrow H^n$ (where $n=p+q$).
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item The sequence \emph{converges weakly} to $(H^*,F^*)$ if additionally $F^*$
+    is exhaustive.
+  \item It \emph{converges} if $F^*$ is exhaustive and separated.
+  \item It \emph{converges strongly} if $F^*$ is exhaustive, separated, and
+    complete.
+\end{enumerate}
+Strong convergence allows one to recover $H^n$, up to extensions, from the
+$E_\infty$-terms via the filtration.
+\end{definition}
+
+\begin{definition}\label{def:SS-morphism}
+A \emph{morphism of spectral sequences} $f_r^{pq}:E_r^{pq}\to\tilde{E}_r^{pq}$
+is a collection of group homomorphisms, one for each $r\geq 1$ and $(p,q)$,
+satisfying:
+\begin{enumerate}
+  \item $f_r^{pq}$ commutes with differentials:
+    $\tilde{d}_r^{pq}\circ f_r^{pq}=f_r^{p+r,q-r+1}\circ d_r^{pq}$, i.e.\
+    the square
+    \[
+    \begin{tikzcd}
+      E_r^{pq} \ar[r,"d_r^{pq}"] \ar[d,"f_r^{pq}"'] &
+        E_r^{p+r,q-r+1} \ar[d,"f_r^{p+r,q-r+1}"] \\
+      \tilde{E}_r^{pq} \ar[r,"\tilde{d}_r^{pq}"'] &
+        \tilde{E}_r^{p+r,q-r+1}
+    \end{tikzcd}
+    \]
+    commutes for all $r,p,q$.
+  \item The induced map on cohomology agrees with $f_{r+1}^{pq}$ under the
+    structure isomorphisms $E_{r+1}^{pq}\cong H(E_r^{**},d_r)$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Comparison theorem for strongly convergent spectral sequences]
+\label{thm:5-term}
+Let $E_r^{pq}\Rightarrow H^n$ and $\tilde{E}_r^{pq}\Rightarrow\tilde{H}^n$ be two
+spectral sequences converging strongly to the filtered groups $(H^*,F^*)$ and
+$(\tilde{H}^*,\tilde{F}^*)$ respectively.  Let
+$f_r:E_r^{**}\to\tilde{E}_r^{**}$ be a morphism of spectral sequences and
+$f^*:H^*\to\tilde{H}^*$ a morphism of filtered graded groups such that the diagram
+\[
+\begin{tikzcd}
+  E_\infty^{pq} \ar[r,"\sim"] \ar[d,"f_\infty^{pq}"'] &
+    \Gr_F^p H^{p+q} \ar[d,"\Gr^p f^{p+q}"] \\
+  \tilde{E}_\infty^{pq} \ar[r,"\sim"'] &
+    \Gr_{\tilde{F}}^p \tilde{H}^{p+q}
+\end{tikzcd}
+\]
+commutes for all $(p,q)$.  If there exists $a\geq 1$ such that
+$f_a^{pq}:E_a^{pq}\xrightarrow{\sim}\tilde{E}_a^{pq}$ is an isomorphism for all
+$(p,q)$, then $f_a^{pq}$ is an isomorphism for all $r\geq a$ (in particular at
+$r=\infty$), and $f^n:H^n\to\tilde{H}^n$ is an isomorphism of filtered groups for
+all $n$.
+\end{theorem}
+\begin{proof}
+Since $f_a^{pq}$ is an isomorphism and commutes with $d_a$, the induced map on
+cohomology $f_{a+1}^{pq}:E_{a+1}^{pq}\to\tilde{E}_{a+1}^{pq}$ is also an
+isomorphism (the five lemma applied to the short exact sequence
+$0\to B_a^{pq}\to Z_a^{pq}\to E_{a+1}^{pq}\to 0$).  By induction, $f_r^{pq}$ is
+an isomorphism for all $r\geq a$, hence at $r=\infty$.
+
+The commutative diagram in the statement gives, for each $p$ and $n=p+q$, an
+isomorphism $\Gr_F^p H^n\xrightarrow{\sim}\Gr_{\tilde{F}}^p\tilde{H}^n$.  Since
+both filtrations are exhaustive, separated, and complete, we apply the following
+comparison lemma: a morphism of complete, separated, exhaustive filtrations on $H^n$
+and $\tilde{H}^n$ that induces isomorphisms on all graded pieces is itself an
+isomorphism of filtered groups.  This follows by induction on the filtration length
+(for finite filtrations) and in general by passing to the limit using completeness:
+\[
+  H^n \cong \varprojlim_p H^n/F^pH^n,\quad
+  \tilde{H}^n \cong \varprojlim_p \tilde{H}^n/\tilde{F}^p\tilde{H}^n,
+\]
+and the induced maps on each finite quotient $H^n/F^pH^n\to
+\tilde{H}^n/\tilde{F}^p\tilde{H}^n$ are isomorphisms (by the five lemma applied
+to the finite filtration $F^p\supset F^{p+1}\supset\cdots$), so the inverse limit
+is an isomorphism.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsubsection{Spectral sequences from exact couples}
+\label{subsubsec:exact-couples}
+
+\begin{definition}\label{def:exact-couple}
+An \emph{exact couple} is a diagram of abelian groups and morphisms
+\[
+\begin{tikzcd}[column sep=2em, row sep=1.6em]
+  D \ar[rr,"\alpha"] && D \ar[dl,"\beta"]\\
+  & E \ar[ul,"\gamma"] &
+\end{tikzcd}
+\]
+that is exact at each of the three vertices, i.e.\
+$\ker\alpha=\operatorname{im}\gamma$, $\ker\beta=\operatorname{im}\alpha$, and
+$\ker\gamma=\operatorname{im}\beta$.
+\end{definition}
+
+The composite $d:=\beta\circ\gamma:E\to E$ satisfies $d^2=\beta\gamma\beta\gamma=0$
+(since $\gamma\beta=0$ by exactness at $D$).  Thus $(E,d)$ is a differential group.
+
+\begin{proposition}\label{prop:derived-couple}
+Given an exact couple $(D,E,\alpha,\beta,\gamma)$, set
+\[
+  D' := \operatorname{im}\alpha \subset D,\qquad
+  E' := H(E,d) = \ker d\,/\,\operatorname{im} d.
+\]
+Define morphisms $\alpha':D'\to D'$, $\beta':D'\to E'$, $\gamma':E'\to D'$ by
+\[
+  \alpha'(\alpha x) := \alpha(\alpha x),\quad
+  \beta'(\alpha x) := [\beta x],\quad
+  \gamma'([e]) := \gamma(e),
+\]
+where $[{-}]$ denotes the class in $E'$.  Then:
+\begin{enumerate}
+  \item $\alpha'$, $\beta'$, $\gamma'$ are well-defined.
+  \item The derived couple $(D',E',\alpha',\beta',\gamma')$
+    \[
+    \begin{tikzcd}[column sep=2em, row sep=1.6em]
+      D' \ar[rr,"\alpha'"] && D' \ar[dl,"\beta'"]\\
+      & E' \ar[ul,"\gamma'"] &
+    \end{tikzcd}
+    \]
+    is again an exact couple.
+\end{enumerate}
+Iterating, one obtains a sequence of exact couples $(D_r,E_r,\alpha_r,\beta_r,\gamma_r)$
+with $D_1=D$, $E_1=E$, and $d_r:=\beta_r\circ\gamma_r:E_r\to E_r$.  The groups
+$\{E_r, d_r\}$ form a spectral sequence.
+\end{proposition}
+\begin{proof}
+\textit{Well-definedness of $\beta'$.}  Suppose $\alpha x=\alpha x'$, so
+$\alpha(x-x')=0$, hence $x-x'\in\ker\alpha=\operatorname{im}\gamma$, say
+$x-x'=\gamma e$.  Then $\beta x - \beta x'=\beta\gamma e = de$, so
+$[\beta x]=[\beta x']$ in $E'$.
+
+\textit{Well-definedness of $\gamma'$.}  Suppose $[e]=[e']$, so $e-e'\in\operatorname{im} d
+= \operatorname{im}\beta\gamma$.  Write $e-e'=\beta\gamma f$ for some $f\in E$.
+Then $\gamma(e)-\gamma(e')=\gamma\beta\gamma f$.  But $\gamma\beta=0$ by exactness,
+so $\gamma(e)=\gamma(e')$ and $\gamma'$ is well-defined.  Moreover $\gamma'[e]=
+\gamma e\in\ker\alpha=\operatorname{im}\gamma\subset D'$, so $\gamma'$ maps into $D'$.
+
+\textit{Exactness at $D'$ (i.e.\ $\ker\alpha'=\operatorname{im}\gamma'$).}
+$\ker\alpha' = \ker(\alpha|_{\operatorname{im}\alpha})
+= \operatorname{im}\alpha\cap\ker\alpha
+= \operatorname{im}\alpha\cap\operatorname{im}\gamma$.
+On the other hand $\operatorname{im}\gamma'
+=\gamma(\ker d)=\gamma(\ker\beta\gamma)$.
+If $\gamma e\in\operatorname{im}\alpha$ then $\gamma e=\alpha x$ and
+$\beta\gamma e=\beta\alpha x=0$ (exactness at $D$), so $e\in\ker\beta\gamma=\ker d$.
+Conversely if $e\in\ker d$ then $\beta\gamma e=0$, so $\gamma e\in\ker\beta=
+\operatorname{im}\alpha$.  Hence $\ker\alpha'=\operatorname{im}\gamma'$.
+
+\textit{Exactness at $D'$ on the other side
+(i.e.\ $\ker\beta'=\operatorname{im}\alpha'$).}
+$\ker\beta' = \{\alpha x : [\beta x]=0\} = \{\alpha x : \beta x\in\operatorname{im} d\}
+= \{\alpha x : \beta x = \beta\gamma e\text{ for some }e\}$.
+Since $\beta(x-\gamma e)=0$, we have $x-\gamma e\in\ker\beta=\operatorname{im}\alpha$,
+say $x-\gamma e=\alpha y$.  Then $\alpha x=\alpha^2 y=\alpha'(\alpha y)$.
+Hence $\ker\beta'\subset\operatorname{im}\alpha'$; the reverse inclusion is clear.
+
+\textit{Exactness at $E'$.}
+$\ker\gamma' = \{[e]\in E': \gamma e=0\} = \{[e]: e\in\ker\gamma\}
+= \{[e]: e\in\operatorname{im}\beta\}$.
+On the other hand $\operatorname{im}\beta' = \{[\beta x]: x\in D\}
+= \beta(\ker\beta\gamma^{-1}(\operatorname{im}\alpha))/\operatorname{im} d$.
+Since $\beta\alpha=0$ the image of $\beta$ lands in $\ker\gamma/\operatorname{im} d$
+(by exactness at $E$, $\ker\gamma=\operatorname{im}\beta$), so
+$\operatorname{im}\beta'=\{[\beta x]\}\subset\ker\gamma'$ and one checks the
+reverse inclusion similarly.
+
+Iteration is straightforward: $(D_r,E_r):=(D_{r-1}',E_{r-1}')$ and
+$E_{r+1}^{pq}=\ker d_r^{pq}/\operatorname{im}d_r^{p-r,q+r-1}$ recovers the structure
+isomorphism of Definition~\ref{def:spectral-sequence}.
+\end{proof}
+
+\begin{note}\label{note:bigraded-couple}
+In the bigraded case, one indexes the exact couple as
+$(D^{**},E^{**},\alpha,\beta,\gamma)$ with
+\[
+  \deg\alpha = (-1,1),\quad \deg\beta = (0,0),\quad \deg\gamma = (1,0).
+\]
+After deriving $r-1$ times, the $r$-th couple has degrees
+\[
+  \deg\alpha_r = (-1,1),\quad
+  \deg\beta_r = (r-1,\,1-r),\quad
+  \deg\gamma_r = (1,0),
+\]
+and the differential $d_r=\beta_r\gamma_r$ has bidegree $(r,1-r)$.  In the
+homological convention $E_{pq}$ the differential goes
+$d_r:E_r^{pq}\to E_r^{p-r,q+r-1}$.
+\end{note}
+
+% ------------------------------------------------------------------
+\subsubsection{Convergence and limit groups}
+
+Fix a bigraded exact couple $(D^{**},E^{**},\alpha,\beta,\gamma)$ as in
+Note~\ref{note:bigraded-couple}.  Write $\alpha:D^{p,*}\to D^{p-1,*}$ for the
+component of $\alpha$ in filtration degree.
+
+\begin{definition}\label{def:limit-groups}
+Define the \emph{colimit group} and \emph{limit group}:
+\[
+  D^{-\infty} := \varinjlim_p D^{p,*}
+  \quad\text{(under }\alpha\text{)},\qquad
+  D^{\infty}  := \varprojlim_p D^{p,*}
+  \quad\text{(under }\alpha\text{)}.
+\]
+Let $\eta^p:D^{p,*}\to D^{-\infty}$ and $\pi^p:D^\infty\to D^{p,*}$ denote the
+canonical maps.  Define filtrations
+\[
+  F^p D^{-\infty} := \operatorname{im}\eta^p,\qquad
+  F^p D^{\infty}  := \ker\pi^p.
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:filtration-properties}
+With the notation of Definition~\ref{def:limit-groups}:
+\begin{enumerate}
+  \item The filtration $F^*D^{-\infty}$ is exhaustive.
+  \item The filtration $F^*D^\infty$ is separated and complete.
+  \item $\bigcup_p F^p D^\infty = \ker(D^\infty\to D^{-\infty})$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(1) follows immediately since $D^{-\infty}=\varinjlim_p D^{p,*}=\bigcup_p\operatorname{im}\eta^p
+= \bigcup_p F^pD^{-\infty}$.
+
+(2) \textit{Separated:} $F^\infty D^\infty = \bigcap_p\ker\pi^p$.  An element
+$x\in D^\infty$ lies in $\bigcap_p\ker\pi^p$ if and only if $\pi^p(x)=0$ for all
+$p$, i.e.\ $x=0$ in the limit, so $F^\infty D^\infty=0$.
+
+\textit{Complete:} We must show $R^1\varprojlim_p F^pD^\infty=0$, i.e.\
+$R^1\varprojlim_p\ker\pi^p=0$.  For each $p$ there is a short exact sequence
+\[
+  0\longrightarrow \ker\pi^p \longrightarrow D^\infty
+  \xrightarrow{\pi^p} D^{p,*} \longrightarrow \operatorname{coker}\pi^p\longrightarrow 0.
+\]
+Taking the inverse limit and using the Milnor sequence for $R^1\varprojlim$, one
+checks that $R^1\varprojlim_p D^\infty=0$ (the system $D^\infty\xrightarrow{=}D^\infty
+\xrightarrow{=}\cdots$ is Mittag-Leffler), which gives the result.
+
+(3) An element $x\in D^\infty$ satisfies $x\in F^pD^\infty=\ker\pi^p$ for some $p$
+if and only if $\pi^p(x)=0\in D^{p,*}$, i.e.\ the image of $x$ under
+$D^\infty\to D^{p,*}\to D^{-\infty}$ is zero.  Since the colimit is the union of
+the images, $x$ maps to $0$ in $D^{-\infty}$ if and only if it maps to $0$ in
+$D^{p,*}$ for some $p$ (as every element of $D^{-\infty}$ comes from some finite
+stage), which is precisely $\bigcup_p\ker\pi^p$.
+\end{proof}
+
+\begin{remark}\label{rem:RlimD}
+There is a short exact sequence of abelian groups
+\[
+  0\longrightarrow R^1\!\varprojlim_p\, D^{p+1,*}
+  \longrightarrow D^\infty
+  \longrightarrow \varprojlim_p\, D^{p,*}/D^{p+1,*}
+  \longrightarrow 0,
+\]
+obtained from the Milnor exact sequence applied to the tower $\cdots\to D^{p+1,*}
+\to D^{p,*}\to\cdots$.  The term $R^1\!\varprojlim$ is the obstruction to strong
+convergence.
+\end{remark}
+
+The following key lemma describes the relationship between $E_\infty$ and the
+filtration on the limit groups.  It is the technical heart of Boardman's theory.
+
+\begin{lemma}\label{lem:Einf-and-filtration}
+There are natural short exact sequences
+\begin{align}
+  0 &\longrightarrow \operatorname{im}\beta\,/\,B_\infty^{pq}
+      \longrightarrow E_\infty^{pq}
+      \longrightarrow Z_\infty^{pq}/\operatorname{im}\beta
+      \longrightarrow 0, \label{eq:Einf-ses}\\
+  0 &\longrightarrow \Gr_F^p D^{-\infty}
+      \longrightarrow E_\infty^{pq}
+      \longrightarrow RE_\infty^{pq}
+      \longrightarrow 0, \label{eq:Einf-RE}
+\end{align}
+where $RE_\infty^{pq}:=R^1\!\varprojlim_r Z_r^{pq}/B_r^{pq}$ is the derived
+$E_\infty$-term.  In particular, if $RE_\infty^{pq}=0$, then
+$E_\infty^{pq}\cong\Gr_F^p D^{-\infty}$.
+\end{lemma}
+\begin{proof}
+The Milnor exact sequence applied to the tower
+$\cdots\supset Z_r^{pq}\supset Z_{r+1}^{pq}\supset\cdots$ gives
+\[
+  0\to\varprojlim_r Z_r^{pq}\to Z_1^{pq}\xrightarrow{1-s}
+  Z_1^{pq}\to R^1\!\varprojlim_r Z_r^{pq}\to 0,
+\]
+where $s$ is the shift.  One identifies $\varprojlim_r Z_r^{pq}= Z_\infty^{pq}$
+and similarly $\varprojlim_r B_r^{pq}=B_\infty^{pq}$.  The quotient short exact
+sequence then yields~\eqref{eq:Einf-ses}.  Sequence~\eqref{eq:Einf-RE} follows from
+the identification of $\Gr_F^p D^{-\infty}$ with a quotient of $Z_\infty^{pq}$
+via the map $\gamma$; see~\cite{Boa99}, \S5.
+\end{proof}
+
+\begin{definition}\label{def:conditional-convergence}
+Let $E_r^{pq}$ be the spectral sequence associated to an exact couple
+$(D^{**},E^{**},\alpha,\beta,\gamma)$.
+\begin{enumerate}
+  \item The spectral sequence is \emph{conditionally convergent to $D^\infty$}
+    if $D^{-\infty}=0$.
+  \item The spectral sequence is \emph{conditionally convergent to $D^{-\infty}$}
+    if $D^\infty=0$ and $RD^\infty=0$, where
+    $RD^\infty:=R^1\!\varprojlim_p D^{p,*}$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}\label{prop:weak-convergence}
+Suppose $E_r^{pq}$ is associated to an exact couple.
+\begin{enumerate}
+  \item The filtration $F^*D^{-\infty}$ is always exhaustive
+    (Proposition~\textup{\ref{prop:filtration-properties}(1)}).
+  \item If the spectral sequence converges conditionally to $D^\infty$
+    (i.e.\ $D^{-\infty}=0$), then the filtration $F^*D^\infty$ is exhaustive,
+    separated, and complete
+    (Proposition~\textup{\ref{prop:filtration-properties}(2)}).
+  \item In either case the spectral sequence abuts weakly:
+    $E_\infty^{pq}\to\Gr_F^pD^{\pm\infty}$ has kernel and cokernel controlled
+    by $RE_\infty^{pq}$ and $RD^\infty$ via the exact sequences of
+    Lemma~\textup{\ref{lem:Einf-and-filtration}}.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Part~(1) is immediate from the definition of $D^{-\infty}$ as a colimit.  For
+part~(2), when $D^{-\infty}=0$ the exact sequence
+$0\to\varprojlim_p F^pD^\infty\to D^\infty\to D^{-\infty}=0$ shows
+$\varprojlim_p F^pD^\infty=D^\infty$, i.e.\ the filtration is exhaustive after
+reindexing; separatedness and completeness are
+Proposition~\ref{prop:filtration-properties}(2).  Part~(3) is a restatement of
+Lemma~\ref{lem:Einf-and-filtration}.
+\end{proof}
+
+\begin{theorem}[Boardman~\cite{Boa99}, Thm.\ 7.2 and 7.3]\label{thm:convergence-criterion}
+Let $E_r^{pq}$ be the spectral sequence of an exact couple.
+\begin{enumerate}
+  \item \textup{(Strong convergence.)}  If $E_r^{pq}$ converges conditionally to
+    $D^\infty$ and $RE_\infty^{pq}=0$ for all $(p,q)$, then $E_r^{pq}$ converges
+    strongly to $D^\infty$, i.e.\ there are isomorphisms
+    $E_\infty^{pq}\xrightarrow{\sim}\Gr_F^p D^\infty$ and the filtration
+    $F^*D^\infty$ is exhaustive, separated, and complete.
+  \item \textup{(Weak convergence.)}  If $D^\infty=0$, then $E_r^{pq}$ converges
+    weakly to $D^{-\infty}$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\textit{Part (1).}  Since $D^{-\infty}=0$, by Proposition~\ref{prop:filtration-properties}
+the filtration $F^*D^\infty$ is separated and complete, and the sequence
+$0\to D^\infty\to\prod_p D^{p,*}\xrightarrow{\alpha}\prod_p D^{p,*}\to 0$ is
+exact (Milnor).  Consider the natural map from the exact couple:
+for each $p$ and each $r$, there is a commutative diagram
+\[
+\begin{tikzcd}[column sep=3em]
+  D^{p+r,*} \ar[r,"\alpha^r"] \ar[d] &
+    D^{p,*} \ar[r,"\beta"] \ar[d,"\eta^p"] &
+    E^{p,*} \ar[r,"\gamma"] \ar[d,dashed,"\phi_r"] &
+    D^{p-1,*} \ar[d]\\
+  D^{p+r,*} \ar[r,"\alpha^r"'] &
+    D^{p,*} \ar[r,"\beta"'] &
+    E_r^{p,*} \ar[r,"\gamma_r"'] &
+    D_r^{p-1,*}
+\end{tikzcd}
+\]
+where $E_r^{p,*}=\operatorname{im}(\alpha^{r-1}:D^{p+r-1,*}\to D^{p,*})/
+\operatorname{im}(\alpha^r:D^{p+r,*}\to D^{p,*})$ and the dashed vertical arrow is
+the quotient map.  Passing to the limit $r\to\infty$ yields a map
+\[
+  \phi: \Gr_F^p D^\infty
+  \longrightarrow E_\infty^{pq},
+\]
+which is an isomorphism when $RE_\infty^{pq}=0$ by the exact sequence
+$0\to\Gr_F^p D^{-\infty}\to E_\infty^{pq}\to RE_\infty^{pq}\to 0$
+of Lemma~\ref{lem:Einf-and-filtration} together with $D^{-\infty}=0$ (so
+$\Gr_F^p D^{-\infty}=\Gr_F^p D^\infty$).
+
+The filtration $F^*D^\infty$ is exhaustive because: for any $x\in D^\infty$, $x$
+maps to $0$ in $D^{p,*}$ for all sufficiently small $p$ (since $D^{-\infty}=
+\varinjlim_p D^{p,*}=0$ means every element of each $D^{p,*}$ eventually maps to
+$0$ under $\alpha$), hence $x\in F^pD^\infty$ for some $p$.
+
+\textit{Part (2).}  The filtration $F^*D^{-\infty}$ is always exhaustive.  When
+$D^\infty=0$, separatedness is automatic: $\bigcap_p F^pD^{-\infty}=
+\bigcap_p\operatorname{im}\eta^p$.  An element $x$ in this intersection means
+$x=\eta^p(x_p)$ for all $p$, with compatible choices; but the compatibility and
+$D^\infty=0$ force $x=0$.  The abutment $E_\infty^{pq}\to\Gr_F^pD^{-\infty}$
+now follows from Lemma~\ref{lem:Einf-and-filtration} with $RE_\infty^{pq}$
+potentially nonzero.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsubsection{The spectral sequence associated to a filtered complex}
+\label{subsubsec:filtered-complex-SS}
+
+The most classical source of spectral sequences is a filtered complex.
+
+\begin{definition}\label{def:filtered-complex}
+Let $\mathcal{A}$ be an abelian category and $K^\bullet$ a cochain complex.
+A \emph{decreasing filtration} on $K^\bullet$ is a collection of subcomplexes
+\[
+  \cdots\supset F^{p+1}K^\bullet\supset F^pK^\bullet\supset\cdots
+\]
+of $K^\bullet$ (each $F^pK^n$ is a subgroup of $K^n$, and the differential
+$d:K^n\to K^{n+1}$ restricts to $d:F^pK^n\to F^pK^{n+1}$).
+\end{definition}
+
+\begin{proposition}\label{prop:filtered-complex-SS}
+Let $(K^\bullet,F^*)$ be a filtered cochain complex.  There is a spectral sequence
+with
+\[
+  E_0^{pq} = F^pK^{p+q}/F^{p+1}K^{p+q},\qquad
+  E_1^{pq} = H^{p+q}(F^pK^\bullet/F^{p+1}K^\bullet),
+\]
+and $d_r:E_r^{pq}\to E_r^{p+r,q-r+1}$ induced by the differential of $K^\bullet$.
+The abutment is $H^*(K^\bullet)$ with the filtration
+$F^pH^n(K^\bullet):=\operatorname{im}(H^n(F^pK^\bullet)\to H^n(K^\bullet))$.
+\end{proposition}
+\begin{proof}
+This spectral sequence arises from the exact couple
+\[
+\begin{tikzcd}[column sep=2em, row sep=1.6em]
+  \bigoplus_{p,q}H^{p+q}(F^pK^\bullet) \ar[rr,"\alpha"] &&
+  \bigoplus_{p,q}H^{p+q}(F^pK^\bullet) \ar[dl,"\beta"] \\
+  & \bigoplus_{p,q}H^{p+q}(F^pK^\bullet/F^{p+1}K^\bullet) \ar[ul,"\gamma"] &
+\end{tikzcd}
+\]
+where $\alpha$ is induced by the inclusions $F^{p+1}K^\bullet\hookrightarrow
+F^pK^\bullet$ (shifting the filtration degree by $-1$), $\beta$ is the map on
+cohomology induced by the quotient $F^pK^\bullet\to F^pK^\bullet/F^{p+1}K^\bullet$,
+and $\gamma$ is the connecting homomorphism from the long exact sequence of
+the short exact sequence
+\[
+  0\longrightarrow F^{p+1}K^\bullet\longrightarrow F^pK^\bullet
+  \longrightarrow F^pK^\bullet/F^{p+1}K^\bullet\longrightarrow 0.
+\]
+Exactness of the couple at each vertex is exactness of this long exact sequence.
+One checks that $D^{-\infty}=\varinjlim_p H^n(F^pK^\bullet)=H^n(K^\bullet)$ and
+$D^\infty=\varprojlim_p H^n(F^pK^\bullet)$, giving the stated abutment.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsubsection{Proposition 1.63: the spectral sequence of a tower}
+\label{subsubsec:tower-SS}
+
+The spectral sequence that plays the central role in this thesis arises not from a
+filtered complex but from a \emph{tower of objects} in a triangulated category,
+via an exact couple built from the long exact sequences of the tower triangles.
+
+Fix a triangulated category $\mathcal{T}$ admitting coproducts, objects
+$A,B\in\mathcal{T}$, and a tower
+\begin{equation}\label{eq:tower}
+  \cdots\longrightarrow A_{n+1}\xrightarrow{f_n} A_n\longrightarrow\cdots
+  \longrightarrow A_1\xrightarrow{f_0} A_0
+\end{equation}
+of objects and morphisms in $\mathcal{T}$.  For each $n$ complete $f_n$ to a
+distinguished triangle
+\[
+  A_{n+1}\xrightarrow{f_n} A_n\longrightarrow Q_n\longrightarrow A_{n+1}[1],
+\]
+so $Q_n$ is the \emph{$n$-th associated graded object}.
+
+\begin{proposition}\label{prop:tower-SS}
+In the above setup, application of $\Hom_{\mathcal{T}}(B,-)$ to the tower
+\eqref{eq:tower} yields an exact couple
+\[
+\begin{tikzcd}[column sep=2.2em, row sep=1.6em]
+  \displaystyle\bigoplus_{n,q}\Hom(B,A_n[q])
+    \ar[rr,"(f_n)_*"] &&
+  \displaystyle\bigoplus_{n,q}\Hom(B,A_n[q])
+    \ar[dl,"\beta"] \\
+  & \displaystyle\bigoplus_{n,q}\Hom(B,Q_n[q]) \ar[ul,"\gamma"] &
+\end{tikzcd}
+\]
+where $(f_n)_*$ is induced by $f_n$, $\beta$ is induced by $A_n\to Q_n$, and
+$\gamma$ is the connecting map $Q_n\to A_{n+1}[1]$.  The associated spectral
+sequence has $E_1$-term
+\[
+  E_1^{p,q} = \Hom_{\mathcal{T}}(B,\,Q_{-p}[q+p])
+\]
+and converges to $\Hom_{\mathcal{T}}(B,\hocolim_n A_n)$ when $B$ is compact.
+\end{proposition}
+\begin{proof}
+For each $n$, applying the cohomological functor $\Hom_\mathcal{T}(B,-)$
+(Lemma~\ref{lem:Hom-homological}) to the distinguished triangle
+$A_{n+1}\to A_n\to Q_n\to A_{n+1}[1]$ gives a long exact sequence
+\[
+\cdots\to\Hom(B,A_{n+1}[q])\xrightarrow{(f_n)_*}\Hom(B,A_n[q])
+\xrightarrow{\beta}\Hom(B,Q_n[q])
+\xrightarrow{\gamma}\Hom(B,A_{n+1}[q+1])\to\cdots
+\]
+Assembling these into the bigraded groups
+\[
+  D^{pq} := \Hom(B,A_{-p}[q+p]),\qquad
+  E^{pq} := \Hom(B,Q_{-p}[q+p]),
+\]
+the maps $\alpha:=(f_n)_*$, $\beta$, $\gamma$ defined entry-wise give the exact
+couple, since the long exact sequence provides exactness at each vertex by
+definition.  The bidegrees are $\deg\alpha=(-1,1)$, $\deg\beta=(0,0)$,
+$\deg\gamma=(1,0)$, matching Note~\ref{note:bigraded-couple}, so the differential
+$d_r=\beta_r\gamma_r$ has bidegree $(r,1-r)$.
+
+For abutment: when $B$ is compact, by Proposition~\ref{prop:compact-hocolim},
+\[
+  \Hom_\mathcal{T}(B,\hocolim_n A_n)
+  = \colim_n\Hom_\mathcal{T}(B,A_n)
+  = D^{-\infty,*},
+\]
+where the colimit is taken with respect to the tower maps $(f_n)_*$.  The
+filtration on $D^{-\infty}=\Hom(B,\hocolim A_n)$ is then exactly the filtration
+$F_\bullet$ from Definition~\ref{def:filtration-F}, and the spectral sequence abuts
+to $\Hom(B,\hocolim A_n)$ by Proposition~\ref{prop:weak-convergence}.
+\end{proof}
+
+\begin{note}\label{note:tower-halfplane}
+If additionally $E_1^{pq}=0$ for all $p$ below some bound $p_0$ (which occurs in
+our setting because $B\in DM^{\mathrm{eff}}(s)$ forces
+$\Hom(B,bc_{\leq n}A)=0$ for $n\leq s-1$), then the spectral sequence is confined
+to a half-plane and the hypothesis $RE_\infty^{pq}=0$ of
+Theorem~\ref{thm:convergence-criterion}(1) is automatically satisfied.  This is the
+key vanishing used in the proof of Theorem~\ref{thm:main}.
+\end{note}
+
+% ------------------------------------------------------------------
+\subsection{The Voevodsky category of mixed motives}
+
+Let $k$ be a field.  All schemes are assumed to be separated of finite type over $k$.
+We write $\Sch/k$ for the category of schemes over $k$ and $\Sm/k$ for the full
+subcategory of smooth schemes.
+
+% ------------------------------------------------------------------
+\subsubsection{Finite correspondences}
+
+The canonical reference for this subsection is~\cite{MVW06}, Ch.\ 1.
+
+\begin{definition}\label{def:elementary-correspondence}
+Let $X$ be a smooth connected scheme over $k$ and $Y$ any scheme over $k$.  An
+\emph{elementary correspondence} from $X$ to $Y$ is an irreducible closed subscheme
+$W\subset X\times Y$ which is finite and surjective over $X$.
+\end{definition}
+
+The group $\mathrm{Cor}(X,Y)$ is the free abelian group generated by elementary
+correspondences from $X$ to $Y$.  Elements of $\mathrm{Cor}(X,Y)$ are called
+\emph{finite correspondences}.
+
+\begin{definition}\label{def:Cor}
+We define $\Cor:=\Cor(k)$ as the category whose objects are smooth (separated) schemes
+of finite type over $k$ and whose morphisms are finite correspondences:
+\[
+  \Hom_{\Cor}(X,Y) := \Cor(X,Y).
+\]
+\end{definition}
+
+\begin{definition}\label{def:tensor-Cor}
+For $X,Y\in\Cor$, the \emph{tensor product} is $X\otimes Y := X\times_k Y$.  This
+makes $\Cor$ a symmetric monoidal category.
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsubsection{The category of effective geometric motives}
+
+\begin{definition}\label{def:DM-eff-gm}
+The category $\DMeffgm$ is defined as the localisation of $K^b(\Cor)$, as a tensor
+triangulated category, with respect to:
+\begin{itemize}
+  \item \textit{Homotopy.}  For $X\in\Sm/k$, one inverts
+    $p_*:[X\times\A^1]\to[X]$.
+  \item \textit{Mayer–Vietoris.}  For $X=U\cup V$ (Zariski open cover), one inverts
+    the canonical map from the cone of $[U\cap V]\to[U]\oplus[V]$ to $[X]$.
+\end{itemize}
+The category $DM^{\mathrm{eff}}_{\mathrm{gm}}$ of \emph{effective geometric motives} is
+the pseudo-abelian completion of $\DMeffgm$ (formally adding kernels and images of
+projections).
+\end{definition}
+
+\begin{definition}\label{def:DM-gm}
+The \emph{category of geometric motives} $\DMgm$ is defined by inverting the functor
+$\otimes\Z(1)$ on $DM^{\mathrm{eff}}_{\mathrm{gm}}$; that is, there are objects $X(n)$
+for $X\in DM^{\mathrm{eff}}_{\mathrm{gm}}$, $n\in\Z$, with
+\[
+  \Hom_{\DMgm}(X(n),Y(m)) :=
+  \varinjlim_N \Hom_{DM^{\mathrm{eff}}_{\mathrm{gm}}}(X\otimes\Z(N+n),Y\otimes\Z(N+m)).
+\]
+Here $\Z(1):=\widetilde{[\PP^1]}[-2]$ is the Tate motive and
+$\Z(n):=\Z(1)^{\otimes n}$ for $n\geq 0$.
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsubsection{Sites and sheaves}
+
+\begin{definition}\label{def:presheaf}
+A \emph{presheaf} $P$ on a small category $\mathcal{C}$ with values in a category
+$\mathcal{A}$ is a functor $P:\mathcal{C}^{op}\to\mathcal{A}$.
+\end{definition}
+
+\begin{definition}\label{def:Nisnevich}
+Let $X$ be a $k$-variety.  A \emph{Nisnevich cover} $\mathcal{U}\to X$ is an étale
+morphism of finite type such that for each separable field extension $F/k$ of finite
+degree, the map $\mathcal{U}(F)\to X(F)$ is surjective.
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsubsection{Motivic complexes and the Suslin complex}
+
+\begin{definition}\label{def:PST}
+\begin{enumerate}
+  \item The category $\PST:=\PST(k)$ of \emph{presheaves with transfers} is the
+    category of additive functors $\Cor^{op}\to\Ab$.
+  \item The category $\ShvNis(\Cor)$ of \emph{Nisnevich sheaves with transfers} is
+    the full subcategory of $\PST$ consisting of presheaves $F$ such that, for
+    each $X\in\Sm/k$, the restriction $F|_{X_{\mathrm{Nis}}}$ is a sheaf.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}\label{def:Suslin-complex}
+For a presheaf $F$ on $\Sm/k$, let $\Delta^n:=\operatorname{Spec} k[t_0,\ldots,t_n]/(\sum t_i -1)$.
+We define $C_n(F)(X):=F(X\times\Delta^n)$.  The \emph{Suslin complex} is
+\[
+  C_*(F)(X):\quad\cdots\to C_1(F)(X)\xrightarrow{d_1} C_0(F)(X),
+  \quad d_n=\sum_i(-1)^i\delta_i^*,
+\]
+where $\delta_i^n:\Delta^{n-1}\to\Delta^n$ is the $i$-th face map.
+\end{definition}
+
+\begin{theorem}[Voevodsky]\label{thm:Voevodsky-key}
+Let $F\in\PST$ be homotopy invariant over $\Sm/k$.  Then:
+\begin{enumerate}
+  \item The presheaf $X\mapsto H^q(X_{\mathrm{Nis}},F_{\mathrm{Nis}})$ is a presheaf
+    with transfers over $k$.
+  \item $F_{\mathrm{Nis}}$ is strictly homotopy invariant.
+  \item $F_{\mathrm{Zar}}=F_{\mathrm{Nis}}$ and
+    $H^q(X_{\mathrm{Zar}},F_{\mathrm{Zar}})=H^q(X_{\mathrm{Nis}},F_{\mathrm{Nis}})$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+See~\cite{VSF00}, Ch.\ 3, Thm.\ 4.27 and Thm.\ 5.7, or~\cite{MVW06}, Prop.\ 13.9.
+\end{proof}
+
+\begin{theorem}[Voevodsky's embedding theorem]\label{thm:embedding}
+There exists a commutative diagram of exact tensor functors
+\[
+\begin{tikzcd}
+  K^b(\Cor) \ar[r,"L"] \ar[d] & D(\ShvNis(\Cor)) \ar[d,"RC_*"]\\
+  DM^{\mathrm{eff}}_{\mathrm{gm}} \ar[r,"i"] & \DMeff
+\end{tikzcd}
+\]
+such that $i$ is a full embedding with dense image and $RC_*(L(X))\cong C_*(X)$.
+\end{theorem}
+\begin{proof}
+\cite{VSF00}, Thm.\ 3.2.6.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsubsection{Motivic cohomology}
+
+\begin{definition}\label{def:motivic-cohomology}
+For $X\in\Sm/k$ and $q\geq 0$, set $M(X)=C_*(X)$ and define
+\[
+  H^p(X,\Z(q)) := \Hom_{DM^{\mathrm{eff}}_-}\bigl(M_{\mathrm{gm}}(X),\Z(q)[p]\bigr).
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:motivic-chow}
+For $X\in\Sm/k$ and $Y\in\Sch/k$ equidimensional, $\CH^i(Y,j)\cong H^{2i-j}(Y,\Z(i))$
+for $i\geq 0$, $j\in\Z$.
+\end{proposition}
+
+\begin{proposition}\label{prop:motivic-Z1}
+For $X\in\Sm/k$:
+\[
+  H^n(X,\Z(1)) =
+  \begin{cases}
+    H^0_{\mathrm{Zar}}(X,\mathcal{O}_X^*) & n=1,\\
+    \mathrm{Pic}(X):=H^1_{\mathrm{Zar}}(X,\mathcal{O}_X^*) & n=2,\\
+    0 & \text{otherwise}.
+  \end{cases}
+\]
+\end{proposition}
+
+% ------------------------------------------------------------------
+\subsubsection{The Voevodsky category of mixed motives}
+
+The triangulated category $DM$ is defined from $\DMeff$ by localising the Tate motive
+$\Z(1)\in\DMeff$.  Explicitly:
+
+\begin{definition}\label{def:DM}
+There exists a triangulated tensor category $DM$ in which the functor
+$\Z(1)\otimes-:DM\to DM$ is an equivalence, together with a full faithful exact
+tensor functor $\DMeff\to DM$.
+\end{definition}
+
+\begin{note}\label{note:DM-compactly-generated}
+By construction (\cite{VSF00}, \S3.2 and~\cite{Ayo07}, Thm.\ 4.5.67), $DM$ is a
+compactly generated triangulated category with compact generators
+$\{M(X)(n)\}_{n\in\Z}$, where $X$ ranges over smooth schemes of finite type over $k$.
+This follows from the fact that the embedding $DM^{\mathrm{eff}}_{\mathrm{gm}}\hookrightarrow DM$
+is fully faithful with dense image (Theorem~\ref{thm:embedding}), and the objects
+$M(X)(n)$ generate $DM$ under triangles, shifts, and arbitrary coproducts.
+\end{note}
+
+\subsubsection{The motivic Postnikov tower}\label{subsubsec:postnikov}
+
+\begin{definition}\label{def:DMeff-n}
+Let $DM^{\mathrm{eff}}(n)$ be the localisation subcategory of $\DMeff$ generated by
+objects $M(X)(m)[2m]$ with $m\geq n$ and $X\in\Sm/k$.  For $n\in\Z$, we have a
+tower of triangulated subcategories
+\[
+  \cdots\subset DM^{\mathrm{eff}}(n+1)\subset DM^{\mathrm{eff}}(n)\subset\cdots
+  \subset DM^{\mathrm{eff}}(0)=\DMeff.
+\]
+\end{definition}
+
+By Neeman's theorem (Theorem~\ref{thm:Neeman}), the inclusion
+$i_n:DM^{\mathrm{eff}}(n)\hookrightarrow DM$ admits a right adjoint $r_n:DM\to
+DM^{\mathrm{eff}}(n)$.
+
+\begin{definition}\label{def:slice-tower}
+For $E\in\DMeff$, the \emph{slice tower} is
+\[
+  \cdots\to f_{n+1}E\to f_nE\to f_{n-1}E\to\cdots,\quad f_n:=i_n\circ r_n.
+\]
+The \emph{$n$-th slice} of $E$ is $s_nE$, defined by the distinguished triangle
+\[
+  f_{n+1}E\longrightarrow f_nE\longrightarrow s_nE.
+\]
+\end{definition}
+
+\begin{proposition}\label{prop:slice-Z}
+For every $m,n\in\Z$,
+\[
+  f_m(\Z(n)) =
+  \begin{cases}
+    \Z(n) & \text{if } m\leq n,\\
+    0     & \text{if } m>n.
+  \end{cases}
+\]
+Equivalently, $s_n(\Z(n))=\Z(n)$ and $s_m(\Z(n))=0$ for $m\neq n$.
+\end{proposition}
+\begin{proof}
+Recall from Definition~\ref{def:slice-tower} that $f_m = i_m\circ r_m$, where
+$i_m:DM^{\mathrm{eff}}(m)\hookrightarrow DM$ is the inclusion and $r_m:DM\to
+DM^{\mathrm{eff}}(m)$ is its right adjoint.  The category $DM^{\mathrm{eff}}(m)$ is
+generated by objects $M(X)(j)[2j]$ with $j\geq m$ and $X\in\Sm/k$.
+
+\textit{Case $m\leq n$:} We claim $\Z(n)\in DM^{\mathrm{eff}}(m)$, which gives
+$r_m(\Z(n))=\Z(n)$ and hence $f_m(\Z(n))=i_m(\Z(n))=\Z(n)$.  Indeed,
+$\Z(n)=\Z(1)^{\otimes n}$ is the $n$-th Tate motive; by construction
+(\cite{VSF00}, \S3.1) it belongs to $DM^{\mathrm{eff}}(n)\subset DM^{\mathrm{eff}}(m)$
+since $n\geq m$.
+
+More precisely, using Proposition~\ref{prop:bc-properties}(4) adapted to
+$DM^{\mathrm{eff}}(m)$: the counit $\epsilon_m^{\Z(n)}:f_m(\Z(n))\to\Z(n)$ is an
+isomorphism if and only if $\Z(n)\in DM^{\mathrm{eff}}(m)$.  Since $\Z(n)$ is a
+generator of $DM^{\mathrm{eff}}(n)$ and $DM^{\mathrm{eff}}(n)\subset DM^{\mathrm{eff}}(m)$
+for $n\geq m$, we conclude $f_m(\Z(n))\cong\Z(n)$.
+
+\textit{Case $m>n$:} We claim $\Hom_{DM}(M(X)(a)[b],\Z(n))=0$ for all $X\in\Sm/k$
+and $a\geq m>n$, $b\in\Z$.  By the motivic cohomology calculation
+(Proposition~\ref{prop:motivic-Z1} and~\cite{VSF00}, Cor.\ 3.4) together with
+the vanishing $H^p(X,\Z(q))=0$ for $q<0$ and for $p>2q$ (\cite{VSF00}, Thm.\ 4.3.7
+and~\cite{Voe02b}), one has
+\[
+  \Hom_{DM}(M(X)(a)[b],\Z(n))
+  = \Hom_{DM}(M(X),\Z(n-a)[b])
+  = H^b(X,\Z(n-a))
+  = 0
+\]
+since $n-a < 0$ (as $a\geq m>n$).  Therefore $\Z(n)$ is orthogonal to all compact
+generators of $DM^{\mathrm{eff}}(m)$, i.e.\ $\Z(n)\in DM^{\mathrm{eff}}(m)^\perp$.
+
+By the definition of $f_m=i_m\circ r_m$ and the adjunction
+$\Hom_{DM}(i_mA,E)=\Hom_{DM^{\mathrm{eff}}(m)}(A,r_mE)$, taking $E=\Z(n)$ and
+$A\in DM^{\mathrm{eff}}(m)$ arbitrary:
+\[
+  \Hom_{DM}(A,f_m(\Z(n)))
+  = \Hom_{DM}(i_mA,\Z(n))
+  = 0,
+\]
+since $i_mA\in DM^{\mathrm{eff}}(m)$ is built from generators $M(X)(a)[2a]$ with
+$a\geq m>n$.  As $DM^{\mathrm{eff}}(m)$ is compactly generated, we conclude
+$f_m(\Z(n))=0$.
+
+\textit{Slices:} The distinguished triangle
+$f_{n+1}(\Z(n))\to f_n(\Z(n))\to s_n(\Z(n))\to f_{n+1}(\Z(n))[1]$ becomes
+$0\to\Z(n)\to s_n(\Z(n))\to 0$ by the two cases, giving $s_n(\Z(n))\cong\Z(n)$.
+For $m\neq n$: if $m>n$ then $f_m(\Z(n))=0=f_{m+1}(\Z(n))$, so $s_m(\Z(n))=0$;
+if $m<n$ then $f_m(\Z(n))\cong\Z(n)\cong f_{m+1}(\Z(n))$ and the triangle gives
+$s_m(\Z(n))=0$.
+\end{proof}
+
+% ==================================================================
+\section{Results}
+% ==================================================================
+
+% ------------------------------------------------------------------
+\subsection{The orthogonal tower}
+% ------------------------------------------------------------------
+
+Throughout this section we work with motives with coefficients in $R=\Z[\tfrac{1}{p}]$,
+where $p$ is the exponential characteristic of the base field $k$.
+
+We recall the construction of the orthogonal tower from~\cite{Pel17}.  By
+Note~\ref{note:DM-compactly-generated}, $DM$ is compactly generated.  Let
+$\mathcal{G}^{\mathrm{eff}}$ denote the set of compact objects of the form
+$\{M(X)(p)\}_{p\geq 0}$ for $X\in\Sm/k$.  For $n\in\Z$, let
+$\mathcal{G}^{\mathrm{eff}}(n)$ denote the set of compact objects of the form
+$\{M(X)(p)\}_{p\geq n}$ for $X\in\Sm/k$.
+
+Write $DM^\perp(n)$ for the triangulated orthogonal of $DM^{\mathrm{eff}}(n)$
+(\cite{Pel17}, Def.\ 2.1.1.):
+\[
+  DM^\perp(n) = \bigl\{E\in\DMeff : \Hom_{DM^{\mathrm{eff}}}(A,E)=0
+    \text{ for all }A\in DM^{\mathrm{eff}}(n)\bigr\}.
+\]
+
+By (\cite{Pel17}, Lem.\ 2.1.7(2)), $DM^\perp(n)$ is compactly generated.  By
+Theorem~\ref{thm:Neeman}, the inclusion $j_n:DM^\perp(n)\to DM$ admits a right
+adjoint
+\[
+  p_n : DM\longrightarrow DM^\perp(n),
+\]
+which is triangulated.
+
+\begin{definition}\label{def:orthogonal-cover}
+Set $bc_{\leq n}:=j_{n+1}\circ p_{n+1}$ and for $E\in DM$, the \emph{orthogonal
+cover} of $E$ is the canonical map $bc_{\leq n}E\to E$.
+\end{definition}
+
+\begin{proposition}[\cite{Pel17}, Rem.\ 3.2.5, Prop.\ 3.2.4, Cor.\ 3.2.7]
+\label{prop:bc-properties}
+Let $E\in DM$.  The orthogonal cover $bc_{\leq n}E$ satisfies:
+\begin{enumerate}
+  \item $bc_{\leq n}E\in DM^\perp(n+1)$.
+  \item The counit $\theta_n:j_{n+1}p_{n+1}\to\id$ is characterised up to unique
+    isomorphism by: for all $F\in DM^\perp(n+1)$,
+    \[
+      \theta_{n*}^E:\Hom_{DM}(F,bc_{\leq n}E)\xrightarrow{\;\sim\;}\Hom_{DM}(F,E).
+    \]
+  \item There is a canonical natural transformation $\iota_n:bc_{\leq n}\to
+    bc_{\leq n+1}$, and $bc_{\leq n}\circ bc_{\leq n+1}\cong bc_{\leq n}$.
+  \item For $E\in DM$: $\theta_n^E:bc_{\leq n}E\to E$ is an isomorphism in $DM$
+    if and only if $E\in DM^\perp(n+1)$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+\textit{Part (1).}  By Definition~\ref{def:orthogonal-cover},
+$bc_{\leq n}E = j_{n+1}(p_{n+1}E)$.  Since $p_{n+1}:DM\to DM^\perp(n+1)$ maps
+into $DM^\perp(n+1)$ by definition, and $j_{n+1}$ is the inclusion
+$DM^\perp(n+1)\hookrightarrow DM$, we have $bc_{\leq n}E\in DM^\perp(n+1)$.
+
+\textit{Part (2).}  The unit-counit adjunction $(j_{n+1},p_{n+1})$ gives, for any
+$F\in DM$ and $E\in DM$:
+\[
+  \Hom_{DM}(F, j_{n+1}p_{n+1}E)
+  \cong \Hom_{DM^\perp(n+1)}(p_{n+1}F,\, p_{n+1}E).
+\]
+If $F\in DM^\perp(n+1)$ then the unit $\eta_F:F\to j_{n+1}p_{n+1}F$ is an
+isomorphism (since $p_{n+1}$ is right adjoint to the inclusion, and $F$ is already
+in $DM^\perp(n+1)$), so
+\[
+  \Hom_{DM}(F, bc_{\leq n}E)
+  = \Hom_{DM}(F, j_{n+1}p_{n+1}E)
+  \cong \Hom_{DM}(F, E)
+\]
+via post-composition with $\theta_n^E:bc_{\leq n}E\to E$ (the counit of the
+adjunction at $E$).  This is natural in $F$ and $E$, proving~(2).
+
+\textit{Part (3).}  The containment $DM^\perp(n+2)\subset DM^\perp(n+1)$ (since
+$DM^{\mathrm{eff}}(n+1)\subset DM^{\mathrm{eff}}(n+2)$ implies more objects are in the
+orthogonal at level $n+1$) gives a natural map between the corresponding projectors.
+Concretely, there is a canonical map
+\[
+\begin{tikzcd}
+  bc_{\leq n}E \ar[r,"\iota_n"] \ar[dr,"\theta_n^E"']
+    & bc_{\leq n+1}E \ar[d,"\theta_{n+1}^E"]\\
+    & E
+\end{tikzcd}
+\]
+defined by the universal property of part~(2): since $bc_{\leq n}E\in DM^\perp(n+1)$
+by part~(1), there is a unique lift of $\theta_n^E:bc_{\leq n}E\to E$ through
+$\theta_{n+1}^E:bc_{\leq n+1}E\to E$, giving $\iota_n$.  Applying $bc_{\leq n}$ to
+the identity $bc_{\leq n+1}E\xrightarrow{\theta_{n+1}^E} E$ and using the universal
+property again gives $bc_{\leq n}(bc_{\leq n+1}E)\cong bc_{\leq n}E$.
+
+\textit{Part (4).}  $(\Rightarrow)$:  If $\theta_n^E$ is an isomorphism then
+$E\cong bc_{\leq n}E\in DM^\perp(n+1)$ by part~(1).  $(\Leftarrow)$: If
+$E\in DM^\perp(n+1)$, then the unit $\eta_E:E\to j_{n+1}p_{n+1}E = bc_{\leq n}E$
+is an isomorphism (the adjunction unit is an isomorphism precisely for objects
+already in the full subcategory), and $\theta_n^E$ is its inverse.
+\end{proof}
+
+\begin{proposition}[\cite{Pel17}, Thm.\ 3.2.12]\label{prop:orthogonal-tower}
+For each $E\in DM$, there is a commutative diagram in $DM$:
+\[
+\begin{tikzcd}[column sep=2.2em, row sep=2.6em]
+  \cdots \ar[r]
+    & bc_{\leq n}E \ar[r,"\iota_n"] \ar[dr,"\theta_n^E"']
+    & bc_{\leq n+1}E \ar[r] \ar[d,"\theta_{n+1}^E"']
+    & \cdots \ar[r]
+    & \displaystyle\hocolim_{n\to\infty}bc_{\leq n}E \ar[dll,"c"]
+  \\
+    &
+    & E
+    &
+    &
+\end{tikzcd}
+\]
+where $\iota_n:bc_{\leq n}E\to bc_{\leq n+1}E$ is the canonical natural
+transformation of Proposition~\textup{\ref{prop:bc-properties}(3)}, the map
+$c:\hocolim_{n\to\infty}bc_{\leq n}E\to E$ is induced by the universal property of
+the homotopy colimit applied to the compatible system $\{\theta_n^E\}$, and all
+inner triangles commute.
+\end{proposition}
+\begin{proof}
+The existence and properties of the maps $\iota_n$ follow from
+Proposition~\ref{prop:bc-properties}(3): there is a canonical natural transformation
+$bc_{\leq n}\to bc_{\leq n+1}$ for every $n\in\Z$, and these are compatible in the
+sense that the diagram
+\[
+\begin{tikzcd}
+  bc_{\leq n}E \ar[r,"\iota_n"] \ar[dr,"\theta_n^E"']
+    & bc_{\leq n+1}E \ar[d,"\theta_{n+1}^E"] \\
+    & E
+\end{tikzcd}
+\]
+commutes for each $n$.  Indeed, both $\theta_n^E$ and $\theta_{n+1}^E\circ\iota_n$
+are morphisms $bc_{\leq n}E\to E$ in $DM$.  Since $bc_{\leq n}E\in DM^\perp(n+1)$
+by Proposition~\ref{prop:bc-properties}(1), the universal property of
+$\theta_{n+1}^E$ (Proposition~\ref{prop:bc-properties}(2)) gives a unique factorisation
+of any morphism from $bc_{\leq n}E$ to $E$ through $bc_{\leq n+1}E$ — but
+$\theta_n^E$ already maps to $E$ directly, and $\iota_n$ followed by $\theta_{n+1}^E$
+gives the same map, so both composites agree.
+
+The maps $\theta_n^E:bc_{\leq n}E\to E$ thus form a compatible system indexed over
+$\Z$.  By the universal property of the homotopy colimit
+(see Definition~\ref{def:hocolim} and~\cite{Nee01}, Prop.\ 1.6.8), there is a
+unique morphism
+\[
+  c:\hocolim_{n\to\infty}bc_{\leq n}E\longrightarrow E
+\]
+such that for every $n$ the composite
+$bc_{\leq n}E\to\hocolim_{n\to\infty}bc_{\leq n}E\xrightarrow{c} E$
+equals $\theta_n^E$.  This is precisely the statement that all inner triangles in the
+displayed diagram commute.
+\end{proof}
+
+\begin{definition}\label{def:orthogonal-tower}
+The tower of Proposition~\ref{prop:orthogonal-tower} is called the
+\emph{orthogonal tower}.
+\end{definition}
+
+\begin{definition}\label{def:filtration-F}
+For $E,F\in DM$, consider the increasing filtration $F_\bullet$ on
+$\Hom_{DM}(F,E)$ (resp.\ $\Hom_{DM}(F,\hocolim_{n\to\infty}bc_{\leq n}E)$)
+where $F_p$ is the image of
+$\theta_{p*}^E:\Hom_{DM}(F,bc_{\leq p}E)\to\Hom_{DM}(F,E)$
+(resp.\ $\lambda_{p*}^E:\Hom_{DM}(F,bc_{\leq p}E)\to\Hom_{DM}(F,\hocolim bc_{\leq n}E)$).
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsection{Convergence of the orthogonal tower}
+% ------------------------------------------------------------------
+
+\subsubsection{The orthogonal spectral sequence}\label{sec:orthogonal-SS}
+
+Let $E,F\in DM$.  By (\cite{Pel17}, Thm.\ 3.2.8), one constructs canonical
+triangulated functors
+\[
+  bc_{p/p-1}:DM\longrightarrow DM,\quad p\in\Z,
+\]
+fitting into distinguished triangles in $DM$:
+\[
+  bc_{\leq p-1}E\longrightarrow bc_{\leq p}E\longrightarrow bc_{p/p-1}E.
+\]
+
+\begin{proposition}\label{prop:SS-exists}
+The orthogonal tower induces a spectral sequence of homological type
+\[
+  E^1_{p,q} = \Hom_{DM}\!\bigl(F,(bc_{p/p-1}E)[q-p]\bigr)
+  \;\Rightarrow\; \Hom_{DM}(F,E),
+\]
+with differentials $d_r:E^r_{p,q}\to E^r_{p-r,q-r+1}$, where the abutment carries
+the filtration $F_\bullet$ of Definition~\ref{def:filtration-F}.
+
+Similarly, applying $\Hom_{DM}(F,-)$ to the tower $\{bc_{\leq n}E\}$ gives a
+spectral sequence converging to $\Hom_{DM}(F,\hocolim_{n\to\infty}bc_{\leq n}E)$:
+\begin{equation}\label{eq:SS-hocolim}
+  E^1_{p,q} = \Hom_{DM}\!\bigl(F,(bc_{p/p-1}E)[q-p]\bigr)
+  \;\Rightarrow\; \Hom_{DM}(F,\hocolim_{n\to\infty}bc_{\leq n}E).
+\end{equation}
+The canonical map $c:\hocolim bc_{\leq n}E\to E$ of
+Proposition~\ref{prop:orthogonal-tower} induces a morphism of spectral sequences
+from~\eqref{eq:SS-hocolim} to the first that is the identity on $E_1$-terms.
+\end{proposition}
+\begin{proof}
+Apply the cohomological functor $\Hom_{DM}(F,-)$ to each distinguished triangle
+in the orthogonal tower:
+\[
+  bc_{\leq p-1}E \longrightarrow bc_{\leq p}E \longrightarrow bc_{p/p-1}E
+  \longrightarrow (bc_{\leq p-1}E)[1].
+\]
+Setting $D^{p,q}:=\Hom_{DM}(F,(bc_{\leq -p}E)[q+p])$ and
+$E^{p,q}:=\Hom_{DM}(F,(bc_{-p/-p-1}E)[q+p])$, the long exact sequences in
+$\Hom_{DM}(F,-)$ assemble into an exact couple
+\[
+\begin{tikzcd}[column sep=2.8em,row sep=2em]
+  \displaystyle\bigoplus_{p,q} D^{p,q}
+    \ar[rr,"\alpha"] &&
+  \displaystyle\bigoplus_{p,q} D^{p,q}
+    \ar[dl,"\beta"] \\[6pt]
+  & \displaystyle\bigoplus_{p,q} E^{p,q}
+    \ar[ul,"\gamma"] &
+\end{tikzcd}
+\]
+where:
+\begin{itemize}
+  \item $\alpha:D^{p,q}\to D^{p-1,q+1}$ is induced by the tower map
+    $\iota_{-p-1}:bc_{\leq -p-1}E\to bc_{\leq -p}E$;
+  \item $\beta:D^{p,q}\to E^{p,q}$ is induced by the quotient map
+    $bc_{\leq -p}E\to bc_{-p/-p-1}E$;
+  \item $\gamma:E^{p,q}\to D^{p+1,q-1}$ is the connecting map
+    $bc_{-p/-p-1}E\to (bc_{\leq -p-1}E)[1]$ from the distinguished triangle.
+\end{itemize}
+Exactness at each vertex is exactness of the long exact sequence in $\Hom_{DM}(F,-)$
+applied to these triangles.  The bidegrees $\deg\alpha=(-1,1)$, $\deg\beta=(0,0)$,
+$\deg\gamma=(1,0)$ match Note~\ref{note:bigraded-couple}, so
+Proposition~\ref{prop:derived-couple} yields a spectral sequence
+$\{E_r^{p,q},d_r\}_{r\geq 1}$ with
+\[
+  E_1^{p,q} = E^{p,q} = \Hom_{DM}(F,(bc_{p/p-1}E)[q-p]).
+\]
+The colimit group satisfies $D^{-\infty,q}=\varinjlim_p D^{p,q}
+=\Hom_{DM}(F,(\hocolim_n bc_{\leq n}E)[q])$, giving abutment~\eqref{eq:SS-hocolim}.
+The morphism $c_*$ is a morphism of exact couples (it commutes with $\alpha$, $\beta$,
+$\gamma$ since $c$ commutes with all tower maps and quotients), hence a morphism of
+spectral sequences, which is the identity on $E_1$ since $c$ is the identity on each
+$bc_{p/p-1}E$ piece.
+\end{proof}
+
+\subsubsection{Orthogonality and duality}
+
+Throughout this section, let $Y\in\Sm/k$ be a connected scheme of dimension $d$ and
+let $r,s\in\Z$.
+
+\begin{proposition}\label{prop:orthogonality}
+$M(Y)(s)[r]\in DM^\perp(d+s+1)$.
+\end{proposition}
+\begin{proof}
+By (\cite{Pel17}, 2.2), it suffices to show that
+$\Hom_{DM}(M(X)(a)[b], M(Y)(s)[r])=0$ for all $X\in\Sm/k$ and
+$a,b\in\Z$ with $a\geq d+s+1$.  By (\cite{Kel13}, Cor.\ 4.13, Thm.\ 4.12, Thm.\ 5.1)
+we may assume the base field $k$ is perfect.  If $k$ admits resolution of
+singularities, by (\cite{VSF00}, Thm.\ 4.3.7),
+\[
+  \Hom_{DM}(M(X)(a)[b],M(Y)(s)[r])
+  \cong\Hom_{DM}(M(X)\otimes M^c(Y)(e)[f],\Z)
+\]
+where $M^c(Y)\in\DMeff$ is the motive of $Y$ with compact support (\cite{VSF00},
+\S4.1, Cor.\ 4.1.6), $e=a-s-d$ and $f=b-r-2d$.  For a perfect field of positive
+characteristic, the same conclusion follows from (\cite{Sus17}, Thm.\ 5.5.14 and
+Lem.\ 5.5.6).  The hypothesis $a\geq d+s+1$ implies $e=a-s-d\geq 1$, so
+$M(X)\otimes M^c(Y)(e)[f]\in DM^{\mathrm{eff}}(1)$.
+
+We therefore need to show $\Hom_{DM}(A,\Z)=0$ for $A\in DM^{\mathrm{eff}}(1)$.
+Since $DM^{\mathrm{eff}}(1)$ is generated by $\{M(X)(j)[2j]: j\geq 1, X\in\Sm/k\}$,
+it suffices to verify this on generators.  Using the motivic cohomology isomorphism
+$\Hom_{DM}(M(X)(j)[b],\Z) = H^{b-2j}(X,\Z(-j))$ and the vanishing
+$H^p(X,\Z(q))=0$ for $q<0$ (\cite{VSF00}, Cor.\ 3.4), we get zero since $-j\leq -1<0$.
+Therefore $M(X)\otimes M^c(Y)(e)[f]\in DM^{\mathrm{eff}}(1)$ maps to zero in
+$\Hom_{DM}(-,\Z)$, completing the proof.
+\end{proof}
+
+\begin{corollary}\label{cor:bc-isomorphism}
+Let $E=M(Y)(s)[r]\in DM$ where $Y\in\Sm/k$ is connected of dimension $d$.  Then:
+\begin{enumerate}
+  \item The natural map $\theta_{d+s}^E:bc_{\leq d+s}E\to E$ is an isomorphism in
+    $DM$.
+  \item For any $A\in DM$ and any $f:E\to A$ in $DM$, there exists a unique lifting
+    $g:E\to bc_{\leq d+s}A$ such that the diagram
+    \[
+    \begin{tikzcd}
+      & bc_{\leq d+s}A \ar[d,"\theta_{d+s}^A"]\\
+      E \ar[ur,"g"] \ar[r,"f"'] & A
+    \end{tikzcd}
+    \]
+    commutes in $DM$.
+  \item $f=0$ if and only if $g=0$.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+\textit{Part (1).}  By Proposition~\ref{prop:orthogonality},
+$E=M(Y)(s)[r]\in DM^\perp(d+s+1)$.  By Proposition~\ref{prop:bc-properties}(4),
+$\theta_{d+s}^E:bc_{\leq d+s}E\to E$ is an isomorphism if and only if
+$E\in DM^\perp(d+s+1)$, which holds.
+
+\textit{Part (2).}  Applying part~(1) with $A$ in place of $E$: since
+$E=M(Y)(s)[r]\in DM^\perp(d+s+1)$ by Proposition~\ref{prop:orthogonality}, and
+$\theta_{d+s}^A:bc_{\leq d+s}A\to A$ satisfies the universal property of
+Proposition~\ref{prop:bc-properties}(2), we obtain for any $f:E\to A$ a unique
+$g:E\to bc_{\leq d+s}A$ with $\theta_{d+s}^A\circ g = f$.  The diagram commutes
+by construction.  Uniqueness follows because two lifts $g,g'$ satisfy
+$\theta_{d+s}^A\circ(g-g')=0$, and since $\theta_{d+s*}^A$ is an isomorphism on
+$\Hom_{DM}(E,-)$ by Proposition~\ref{prop:bc-properties}(2) (as $E\in DM^\perp(d+s+1)$),
+we get $g=g'$.
+
+\textit{Part (3).}  If $f=0$ then by uniqueness in part~(2), $g=0$.  Conversely,
+if $g=0$ then $f=\theta_{d+s}^A\circ g=0$.
+\end{proof}
+
+\subsubsection{Convergence in $DM$}
+
+In this section we consider objects $A,B\in DM$ where $B=M(X)(s)[r]$ for
+$X\in\Sm/k$ and $r,s\in\Z$.
+
+\begin{theorem}\label{thm:DM-strong-convergence}
+The spectral sequence
+\[
+  E^1_{p,q} = \Hom_{DM}\!\bigl(B,(bc_{p/p-1}A)[q-p]\bigr)
+  \;\Rightarrow\; \Hom_{DM}(B,\hocolim_{n\to\infty}bc_{\leq n}A)
+\]
+converges strongly.
+\end{theorem}
+\begin{proof}
+We verify the three conditions of strong convergence
+(Definition~\ref{def:convergence}(iii)) for the filtration $F_\bullet$ of
+Definition~\ref{def:filtration-F} on $H:=\Hom_{DM}(B,\hocolim_{n\to\infty}bc_{\leq n}A)$.
+
+\textit{Exhaustiveness.}  Since $B=M(X)(s)[r]$ is compact in $DM$
+(Note~\ref{note:DM-compactly-generated}), Proposition~\ref{prop:compact-hocolim} gives
+\[
+  H = \Hom_{DM}(B,\hocolim_{n\to\infty}bc_{\leq n}A)
+  \cong \colim_{n\to\infty}\Hom_{DM}(B,bc_{\leq n}A).
+\]
+Every element of $H$ therefore lies in the image of some
+$\Hom_{DM}(B,bc_{\leq p}A)\to H$, i.e.\ in $F_p H$ for some $p$.
+Hence $F_{-\infty}H = H$.
+
+\textit{Half-plane vanishing.}  By construction,
+$bc_{\leq n}A\in DM^\perp(n+1)$ (Proposition~\ref{prop:bc-properties}(1)).
+Since $B=M(X)(s)[r]\in DM^{\mathrm{eff}}(s)$, for $n\leq s-1$ we have
+$n+1\leq s$, so $DM^{\mathrm{eff}}(s)\subset DM^{\mathrm{eff}}(n+1)$ and hence
+$\Hom_{DM}(B, bc_{\leq n}A)=0$.
+Applying $\Hom_{DM}(B,-)$ to the triangle
+$bc_{\leq p-1}A\to bc_{\leq p}A\to bc_{p/p-1}A$ therefore gives
+$E_1^{p,q}=\Hom_{DM}(B,(bc_{p/p-1}A)[q-p])=0$ for all $p\leq s-1$.
+Thus the spectral sequence is confined to the half-plane $\{p\geq s\}$.
+
+\textit{Strong convergence.}  For any fixed total degree $n=p+q$, only finitely
+many $p\geq s$ contribute non-zero $E_1^{p,q}$ once we note that
+$E_1^{p,q}=\Hom_{DM}(B,(bc_{p/p-1}A)[q-p])$ and the differentials
+$d_r:E_r^{p,q}\to E_r^{p-r,q-r+1}$ have source degree $p-r<p$.  Therefore for
+$r$ large enough all differentials into and out of position $(p,q)$ are zero, so
+$E_\infty^{p,q}=E_r^{p,q}$ for $r\gg 0$, giving $RE_\infty^{p,q}=0$.
+By Theorem~\ref{thm:convergence-criterion}(1) (Boardman, applied via
+Proposition~\ref{prop:tower-SS} and Note~\ref{note:tower-halfplane}), the spectral
+sequence converges strongly.
+\end{proof}
+
+\begin{corollary}\label{cor:hocolim-iso}
+Suppose the canonical map
+\[
+  c:\hocolim_{n\to\infty}bc_{\leq n}A\longrightarrow A
+\]
+induces an isomorphism of abelian groups
+\[
+  c_*:\Hom_{DM}(B,\hocolim_{n\to\infty}bc_{\leq n}A)\xrightarrow{\;\sim\;}
+  \Hom_{DM}(B,A).
+\]
+Then the spectral sequence
+\[
+  E^1_{p,q} = \Hom_{DM}(B,(bc_{p/p-1}A)[q-p])\;\Rightarrow\;\Hom_{DM}(B,A)
+\]
+converges strongly.
+\end{corollary}
+\begin{proof}
+Follows directly from Theorem~\ref{thm:DM-strong-convergence} and the morphism of
+spectral sequences~(2) in Section~\ref{sec:orthogonal-SS}.
+\end{proof}
+
+The following is the main result of this thesis.
+
+\begin{theorem}\label{thm:main}
+The canonical map
+\[
+  c:\hocolim_{n\to\infty}bc_{\leq n}A\xrightarrow{\;\sim\;} A
+\]
+is an isomorphism in $DM$.  Consequently, the spectral sequence
+\[
+  E^1_{p,q} = \Hom_{DM}\!\bigl(B,(bc_{p/p-1}A)[q-p]\bigr)
+  \;\Rightarrow\;\Hom_{DM}(B,A)
+\]
+converges strongly.
+\end{theorem}
+\begin{proof}
+By Corollary~\ref{cor:hocolim-iso}, it suffices to show that $c$ is an isomorphism in
+$DM$.  Since $DM$ is compactly generated, it suffices to show that for all $a,b\in\Z$
+and all $Y\in\Sm/k$, the map
+\[
+  c_*:\Hom_{DM}(M(Y)(a)[b],\hocolim_{n\to\infty}bc_{\leq n}A)
+  \longrightarrow\Hom_{DM}(M(Y)(a)[b],A)
+\]
+is an isomorphism of abelian groups.
+
+\textit{Surjectivity.}  Given $f:M(Y)(a)[b]\to A$, by Corollary~\ref{cor:bc-isomorphism}(2)
+(with $d=\dim Y$), there is a lifting $g:M(Y)(a)[b]\to bc_{\leq d+a}A$ with
+$\theta_{d+a}^A\circ g=f$.  Surjectivity follows from the orthogonal tower
+(Proposition~\ref{prop:orthogonal-tower}).
+
+\textit{Injectivity.}  Let $f:M(Y)(a)[b]\to\hocolim_{n\to\infty}bc_{\leq n}A$ with
+$c_*(f)=0$.  Since $M(Y)(a)[b]$ is compact, by Proposition~\ref{prop:compact-hocolim},
+\[
+  \Hom_{DM}(M(Y)(a)[b],\hocolim_{n\to\infty}bc_{\leq n}A)
+  \cong\colim_n\Hom_{DM}(M(Y)(a)[b],bc_{\leq n}A),
+\]
+so $f$ factors as $M(Y)(a)[b]\xrightarrow{f'} bc_{\leq n}A\xrightarrow{\lambda_{n*}^A}
+\hocolim bc_{\leq n}A$ for some $n\geq d+a$.  Applying Corollary~\ref{cor:bc-isomorphism}(2)
+again, $f'$ factors as
+\[
+\begin{tikzcd}
+  M(Y)(a)[b] \ar[r,"f''"] & bc_{\leq d+a}A\cong bc_{\leq d+a}(bc_{\leq n}A)
+    \ar[r] & bc_{\leq n}A.
+\end{tikzcd}
+\]
+By Corollary~\ref{cor:bc-isomorphism}(3), $f''=0$ since
+$\theta_{d+a}^A\circ f''= c_*(f)=0$, using Proposition~\ref{prop:bc-properties}(3)
+and the two commuting diagrams.  Hence $f=0$.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{The $\mathbb{A}^1$-stable homotopy category of Morel--Voevodsky}
+% ------------------------------------------------------------------
+
+We refer the reader to (\cite{Jar00}, Thm.\ 4.15) for the construction of the
+stable model structure on symmetric $T$-spectra.  We write $\SH$ for its homotopy
+category, the \emph{$\mathbb{A}^1$-stable homotopy category of Morel--Voevodsky}.
+
+Let $\Sigma_T^\infty X_+\in\SH$, $X\in\Sm/k$, be the infinite suspension of the
+simplicial presheaf represented by $X$ with a disjoint basepoint.  By
+(\cite{Jar00}, Prop.\ 4.19), $\SH$ is a tensor triangulated category with unit
+$\mathbf{1}=\Sigma_T^\infty\operatorname{Spec} k_+$.  Writing $E(1)$ for
+$E\otimes\Sigma_T^\infty(\Gm)[-1]$ and $E(n)=(E(n-1))(1)$ inductively for $n\geq 0$,
+the functor $E\mapsto E(1)$ is an autoequivalence (\cite{Hov01}, 8.10;
+\cite{Ayo07}, Thm.\ 4.3.38).  Like $DM$, $\SH$ is compactly generated with compact
+generators
+\[
+  \mathcal{G}_{\SH} = \bigl\{\Sigma_T^\infty X_+(p): X\in\Sm/k,\; p\in\Z\bigr\}.
+\]
+
+\subsubsection{The orthogonal tower in $\SH$}
+\label{subsubsec:SH-tower}
+
+The construction of Section~\ref{subsec:spectral-sequences} and §\ref{subsubsec:postnikov}
+carries over to $\SH$ verbatim, replacing $DM^{\mathrm{eff}}(n)$ by the analogous
+subcategory $\SH^{\mathrm{eff}}(n)$.
+
+\begin{definition}\label{def:SHeff-n}
+For $n\in\Z$, let $\SH^{\mathrm{eff}}(n)$ denote the localisation subcategory of $\SH$
+generated by $\{\Sigma_T^\infty X_+(p): p\geq n,\; X\in\Sm/k\}$.  Define
+\[
+  \SH^\perp(n) := \bigl\{E\in\SH : \Hom_{\SH}(A,E)=0
+    \text{ for all }A\in\SH^{\mathrm{eff}}(n)\bigr\}.
+\]
+By (\cite{Jar00}, Thm.\ 4.15 and~\cite{Pel17}, Lem.\ 2.1.7), $\SH^\perp(n)$ is
+compactly generated, so by Theorem~\ref{thm:Neeman} the inclusion
+$j_n^{\SH}:\SH^\perp(n)\hookrightarrow\SH$ admits a right adjoint
+$p_n^{\SH}:\SH\to\SH^\perp(n)$.  Set
+\[
+  bc_{\leq n}^{\SH} := j_{n+1}^{\SH}\circ p_{n+1}^{\SH}:\SH\longrightarrow\SH,
+\]
+with counit $\theta_n^{E,\SH}:bc_{\leq n}^{\SH}E\to E$.
+\end{definition}
+
+The properties of Proposition~\ref{prop:bc-properties} hold in $\SH$ with identical
+proofs (replacing $DM$ by $\SH$ throughout).  In particular, for each $E\in\SH$
+there is an orthogonal tower
+\[
+\begin{tikzcd}[column sep=2.2em, row sep=2.6em]
+  \cdots \ar[r]
+    & bc_{\leq n}^{\SH}E \ar[r] \ar[dr,"\theta_n^{E,\SH}"']
+    & bc_{\leq n+1}^{\SH}E \ar[r] \ar[d,"\theta_{n+1}^{E,\SH}"']
+    & \cdots \ar[r]
+    & \hocolim_{n\to\infty}bc_{\leq n}^{\SH}E \ar[dll,"c^{\SH}"]
+  \\
+    &
+    & E
+    &
+    &
+\end{tikzcd}
+\]
+and, for $F,E\in\SH$, a spectral sequence (Proposition~\ref{prop:SS-exists} applied
+in $\SH$; see also~\cite{Pel14}):
+\[
+  E^1_{p,q} = \Hom_{\SH}\!\bigl(F,(bc_{p/p-1}^{\SH}E)[q-p]\bigr)
+  \;\Rightarrow\;
+  \Hom_{\SH}(F,\hocolim_{n\to\infty}bc_{\leq n}^{\SH}E).
+\]
+We henceforth drop the superscript $\SH$ and write $bc_{\leq n}$, $\theta_n^E$, etc.\
+when the ambient category is clear from context.
+
+\subsubsection{Failure of strong convergence for $\mathbf{1}\in\SH$}
+
+\begin{proposition}\label{prop:counterexample}
+The canonical map
+\[
+  c:\hocolim_{n\to\infty}bc_{\leq n}\mathbf{1}\longrightarrow\mathbf{1}
+\]
+is \emph{not} an isomorphism in $\SH$.
+\end{proposition}
+\begin{proof}
+Suppose for contradiction that $c$ is an isomorphism.  Since
+$\mathbf{1}\in\SH$ is compact (it is among the generators $\mathcal{G}_{\SH}$),
+Proposition~\ref{prop:compact-hocolim} gives
+\[
+  \colim_{n\to\infty}\Hom_{\SH}(\mathbf{1},bc_{\leq n}\mathbf{1})
+  \xrightarrow{\;\sim\;}
+  \Hom_{\SH}\!\bigl(\mathbf{1},\hocolim_{n\to\infty}bc_{\leq n}\mathbf{1}\bigr)
+  \xrightarrow{\;c_*\;}\Hom_{\SH}(\mathbf{1},\mathbf{1}).
+\]
+Since $c_*$ would be an isomorphism, $\id_{\mathbf{1}}$ is in the image of some
+$\Hom_{\SH}(\mathbf{1},bc_{\leq n}\mathbf{1})\to\Hom_{\SH}(\mathbf{1},\mathbf{1})$,
+meaning $\id_{\mathbf{1}}$ factors as:
+\[
+\begin{tikzcd}
+  & bc_{\leq n}\mathbf{1} \ar[d,"\theta_n^{\mathbf{1}}"]\\
+  \mathbf{1} \ar[ur,"\sigma"] \ar[r,"\id"'] & \mathbf{1}.
+\end{tikzcd}
+\]
+From $\theta_n^{\mathbf{1}}\circ\sigma=\id_{\mathbf{1}}$, we get that $\sigma$ is a
+split monomorphism, so $\mathbf{1}$ is a direct summand of $bc_{\leq n}\mathbf{1}$.
+Since $bc_{\leq n}\mathbf{1}\in\SH^\perp(n+1)$ by Proposition~\ref{prop:bc-properties}(1)
+(in $\SH$), and $\SH^\perp(n+1)$ is closed under direct summands (it is a thick
+subcategory by Proposition~\ref{prop:kernel-properties}), we conclude
+$\mathbf{1}\in\SH^\perp(n+1)$.
+
+However, by (\cite{Voe02a}, Thm.\ 2.2(3)) $s_m\mathbf{1}=\mathbf{1}_{s_m}\neq 0$
+for all $m\geq 0$; more precisely, $\mathbf{1}\in\SH^{\mathrm{eff}}(m)\setminus\SH^{\mathrm{eff}}(m+1)$
+for every $m$ (\cite{Lev14}, Conj.\ 9 and p.\ 350), so $\mathbf{1}\notin\SH^\perp(n+1)$
+for any $n$.  This is a contradiction.
+\end{proof}
+
+\begin{note}\label{note:counterexample-general}
+The argument of Proposition~\ref{prop:counterexample} applies to any compact
+$A\in\SH$ for which $s_mA\neq 0$ for arbitrarily large $m$.
+\end{note}
+
+\begin{corollary}\label{cor:counterexample2}
+For the sphere spectrum $\mathbf{1}\in\SH$, the spectral sequence
+\[
+  E^1_{p,q} = \Hom_{\SH}\!\bigl(\Sigma_T^\infty X_+(s)[t],
+    (bc_{p/p-1}\mathbf{1})[q-p]\bigr)
+  \;\Rightarrow\;
+  \Hom_{\SH}(\Sigma_T^\infty X_+(s)[t],\mathbf{1})
+\]
+does \emph{not} converge strongly for any $\Sigma_T^\infty X_+(s)[t]$ with
+$X\in\Sm/k$, $s,t\in\Z$.
+\end{corollary}
+\begin{proof}
+Suppose for contradiction that the spectral sequence converges strongly for some
+generator $B=\Sigma_T^\infty X_+(s)[t]$.  The morphism of spectral sequences induced
+by $c_*$ (Proposition~\ref{prop:SS-exists} applied in $\SH$, equation~\eqref{eq:SS-hocolim})
+is the identity on $E_1$-terms, so by Theorem~\ref{thm:5-term} the comparison map
+\[
+  c_*:\Hom_{\SH}(B,\hocolim_{n\to\infty}bc_{\leq n}\mathbf{1})
+  \xrightarrow{\;\sim\;} \Hom_{\SH}(B,\mathbf{1})
+\]
+is an isomorphism of filtered groups.  Since $\SH$ is compactly generated by
+$\mathcal{G}_{\SH}$ and this holds for every $B\in\mathcal{G}_{\SH}$
+(by the same argument for each generator), $c$ is an isomorphism in $\SH$ — 
+contradicting Proposition~\ref{prop:counterexample}.
+\end{proof}
+
+\subsubsection{Strong convergence for $\SH^\perp(r)$-objects}
+
+\begin{proposition}\label{prop:SHconvergence}
+Let $A\in\SH$ be such that $A\in\SH^\perp(r)$ for some $r\in\Z$.  Then:
+\begin{enumerate}
+  \item The canonical map $c:\hocolim_{n\to\infty}bc_{\leq n}A\xrightarrow{\;\sim\;} A$
+    is an isomorphism in $\SH$.
+  \item The spectral sequence
+    \[
+      E^1_{p,q} = \Hom_{\SH}\!\bigl(\Sigma_T^\infty X_+(s)[t],
+        (bc_{p/p-1}A)[q-p]\bigr)
+      \;\Rightarrow\;\Hom_{\SH}(\Sigma_T^\infty X_+(s)[t],A)
+    \]
+    converges strongly for all $X\in\Sm/k$, $s,t\in\Z$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+\textit{Part (1).}  Let $m\geq r$ be arbitrary.  Since
+$DM^{\mathrm{eff}}(m)\supset DM^{\mathrm{eff}}(r)$ is implied by $m\geq r$ (more conditions
+generate a larger orthogonal), and $A\in\SH^\perp(r)$ means $\Hom_\SH(B,A)=0$
+for all $B\in\SH^{\mathrm{eff}}(r)$, we get $A\in\SH^\perp(m)$ for all $m\geq r$
+since $\SH^{\mathrm{eff}}(m)\subset\SH^{\mathrm{eff}}(r)$.
+
+By Proposition~\ref{prop:bc-properties}(4) in $\SH$: since $A\in\SH^\perp(m+1)$
+(using $m\geq r$), the counit $\theta_m^A:bc_{\leq m}A\to A$ is an isomorphism.
+Therefore in the tower
+\[
+\begin{tikzcd}[column sep=1.8em]
+  \cdots \ar[r] & bc_{\leq r-1}A \ar[r] & bc_{\leq r}A \ar[r]
+    \ar[dr,"\sim"'] & bc_{\leq r+1}A \ar[r] \ar[d,"\sim"'] & \cdots \\
+  &&& A &&
+\end{tikzcd}
+\]
+all maps $\theta_m^A$ for $m\geq r$ are isomorphisms, and the tower stabilises.
+The homotopy colimit of a stable tower is the stable value, so
+$\hocolim_{n\to\infty}bc_{\leq n}A\cong A$ and $c$ is an isomorphism.
+
+\textit{Part (2).}  By part~(1) and Corollary~\ref{cor:hocolim-iso} (applied in
+$\SH$ with $B=\Sigma_T^\infty X_+(s)[t]$), it suffices that $c_*$ is an isomorphism
+on all Hom groups from compact generators.  Since $B$ is compact and $c$ is now an
+isomorphism in $\SH$, $c_*$ is immediately an isomorphism.  The strong convergence
+then follows from Theorem~\ref{thm:DM-strong-convergence} applied in $\SH$.
+\end{proof}
+
+\begin{corollary}\label{cor:sliceconv}
+Let $B=\Sigma_T^\infty X_+(s)[t]$ with $X\in\Sm/k$, $s,t\in\Z$.  Consider the
+Voevodsky slice spectral sequence (\cite{Voe02a}, \S7) for $G\in\SH$:
+\[
+  E_1^{m,n} = \Hom_{\SH}(B,s_mG[m+n])\;\Rightarrow\;\Hom_{\SH}(B,G).
+\]
+The orthogonal spectral sequence
+\[
+  E^1_{p,q} = \Hom_{\SH}\!\bigl(B,(bc_{p/p-1}s_mG[m+n])[q-p]\bigr)
+  \;\Rightarrow\;\Hom_{\SH}(B,s_mG[m+n])
+\]
+converges strongly towards the $E_1$-term
+$E_1^{m,n}=\Hom_{\SH}(B,s_mG[m+n])$.  Moreover, the differential
+$d_1:E_1^{m,n}\to E_1^{m+1,n}$ of the slice spectral sequence induces a map
+between the orthogonal spectral sequences for consecutive slices, fitting into
+the commutative diagram:
+\[
+\begin{tikzcd}[column sep=3em, row sep=2em]
+  E^1_{p,q}\bigl(s_mG[m+n]\bigr) \ar[r,"d_r"] \ar[d,"d_{1*}"'] &
+    E^1_{p-r,q-r+1}\bigl(s_mG[m+n]\bigr) \ar[d,"d_{1*}"] \\
+  E^1_{p,q}\bigl(s_{m+1}G[m+1+n]\bigr) \ar[r,"d_r"'] &
+    E^1_{p-r,q-r+1}\bigl(s_{m+1}G[m+1+n]\bigr).
+\end{tikzcd}
+\]
+\end{corollary}
+\begin{proof}
+By (\cite{Voe02a}, Thm.\ 2.2(3)), $s_mG\in\SH^\perp(m+1)$ for every $m$ and every
+$G\in\SH$.  Shifting: $s_mG[m+n]\in\SH^\perp(m+1)$ as well (shifts preserve
+orthogonality since $\SH^\perp(m+1)$ is closed under the translation functor by
+the triangulated structure).  Therefore, with $A=s_mG[m+n]$ and $r=m+1$,
+Proposition~\ref{prop:SHconvergence}(2) applies and gives strong convergence.
+
+For the morphism of spectral sequences: the differential
+$d_1:E_1^{m,n}\to E_1^{m+1,n}$ of the slice spectral sequence is induced by the
+natural map $\partial[m+n]:s_mG[m+n]\to s_{m+1}G[m+1+n]$, where $\partial$ is the
+composition (\cite{Voe02a}, Thm.\ 2.2(1))
+\[
+  s_mG \xrightarrow{\sigma_m} f_{m+1}G[1] \xrightarrow{\pi_{m+1}[1]} s_{m+1}G[1].
+\]
+Since the orthogonal tower functor $bc_{\leq n}^{\SH}$ is triangulated and natural
+(Definition~\ref{def:SHeff-n} and Proposition~\ref{prop:bc-properties} in $\SH$),
+post-composition with $\partial[m+n]$ defines a morphism of exact couples
+(in the sense of Definition~\ref{def:SS-morphism}), hence a morphism of spectral
+sequences.  The commutativity of the square with $d_r$ follows from naturality of
+the exact couple construction (Proposition~\ref{prop:derived-couple}) with respect
+to morphisms of the tower.
+\end{proof}
+
+
+
+\begin{thebibliography}{99}
+
+\bibitem{SGA4}
+\textit{Théorie des topos et cohomologie étale des schémas.}
+Tome~1, 2. Séminaire de Géométrie Algébrique du Bois-Marie 1963--1964 (SGA~4).
+Dirigé par M.\ Artin, A.\ Grothendieck et J.L.\ Verdier. Lecture Notes in Mathematics
+269. Springer-Verlag, Berlin--New York, 1972.
+
+\bibitem{Ayo07}
+J.\ Ayoub. \textit{Les six opérations de Grothendieck et le formalisme des cycles
+évanescents dans le monde motivique}. II. Astérisque~\textbf{315}:vi+364\,pp.,
+2008 (2007).
+
+\bibitem{Bei87}
+A.A.\ Beilinson. Height pairing between algebraic cycles. In
+\textit{K-theory, Arithmetic and Geometry} (Moscow, 1984--1986), pp.\ 1--25, 1987.
+
+\bibitem{Blo80}
+S.\ Bloch. \textit{Lectures on Algebraic Cycles}. Duke University Mathematics Series
+IV. Duke University Mathematics Department, Durham, N.C., 1980.
+
+\bibitem{Boa99}
+J.M.\ Boardman. Conditionally convergent spectral sequences.
+In \textit{Homotopy Invariant Algebraic Structures} (Baltimore, MD, 1998),
+Contemp.\ Math.\ \textbf{239}, pp.\ 49--84. Amer.\ Math.\ Soc., Providence, RI,
+1999.
+
+\bibitem{BBD}
+Y.\ Manin, S.\ Gelfand. \textit{Methods of Homological Algebra}. Springer, 1996.
+
+\bibitem{Mur93}
+J.P.\ Murre. On a conjectural filtration on the Chow groups of an algebraic variety.
+I. The general conjectures and some examples.
+\textit{Indag.\ Math.\ (N.S.)} \textbf{4}(2):177--188, 1993.
+
+\bibitem{Hov01}
+M.\ Hovey. Spectra and symmetric spectra in general model categories.
+\textit{J.\ Pure Appl.\ Algebra} \textbf{165}(1):63--127, 2001.
+
+\bibitem{Hub06}
+A.\ Huber, B.\ Kahn. The slice filtration and mixed Tate motives.
+\textit{Compos.\ Math.} \textbf{142}(4):907--936, 2006.
+
+\bibitem{Jar00}
+J.F.\ Jardine. Motivic symmetric spectra. \textit{Doc.\ Math.} \textbf{5}:445--553,
+2000.
+
+\bibitem{Kel13}
+S.\ Kelly. Triangulated categories of motives in positive characteristic (2013).
+Preprint, arXiv:1305.5349v2.
+
+\bibitem{MVW06}
+C.\ Mazza, V.\ Voevodsky, C.\ Weibel. \textit{Lecture Notes on Motivic Cohomology}.
+Clay Mathematics Monographs, vol.\ 2. Amer.\ Math.\ Soc., Providence, RI, 2006.
+
+\bibitem{Lev14}
+M.\ Levine. A comparison of motivic and classical stable homotopy theories.
+\textit{J.\ Topol.} \textbf{7}(2):327--362, 2014.
+
+\bibitem{Mum69}
+D.\ Mumford. Rational equivalence of 0-cycles on surfaces.
+\textit{J.\ Math.\ Kyoto Univ.} \textbf{9}:195--204, 1969.
+
+\bibitem{Nee96}
+A.\ Neeman. The Grothendieck duality theorem via Bousfield techniques and Brown
+representability. \textit{J.\ Amer.\ Math.\ Soc.} \textbf{9}(1):205--236, 1996.
+
+\bibitem{Nee01}
+A.\ Neeman. \textit{Triangulated Categories}. Princeton University Press, 2001.
+
+\bibitem{Ner52a}
+A.\ Néron. Problèmes arithmétiques et géometriques rattachée à la notion de rang
+d'une courbe algébrique dans un corps. \textit{Bull.\ Soc.\ Math.\ France}
+\textbf{80}:101--166, 1952.
+
+\bibitem{Ner52b}
+A.\ Néron. La théorie de la base pour les diviseurs sur les variétés algébriques.
+2nd Coll.\ Géom.\ Alg., Liège, G.\ Thone, pp.\ 119--126, 1952.
+
+\bibitem{Pel14}
+P.\ Peláez. \textit{Motivic Birational Covers and Finite Filtrations on Chow
+Groups}, 2014.
+
+\bibitem{Pel17}
+P.\ Peláez. Mixed motives and motivic birational covers.
+\textit{J.\ Pure Appl.\ Algebra} \textbf{221}:1699--1716, 2017.
+
+\bibitem{Sev34}
+F.\ Severi. La base per le varietà algebriche di dimensione qualunque contenute in
+una data e la teoria generale delle corrispondénze fra i punti di due superficie
+algebriche. \textit{Mem.\ Accad.\ Ital.} \textbf{5}:239--283, 1934.
+
+\bibitem{Sus17}
+A.\ Suslin. Motivic complexes over nonperfect fields.
+\textit{Ann.\ K-Theory} \textbf{2}(2):277--302, 2017.
+
+\bibitem{Stacks}
+The Stacks Project. \url{http://stacks.math.columbia.edu} (2017).
+
+\bibitem{Ver77}
+J.L.\ Verdier. Catégories triangulées, état~0. Cohomologie étale. Séminaire de
+Géométrie Algébrique du Bois-Marie SGA~$4\tfrac{1}{2}$. P.\ Deligne avec la
+collaboration de J.F.\ Boutot, A.\ Grothendieck, L.\ Illusie et J.L.\ Verdier.
+Lecture Notes in Mathematics~569. Springer-Verlag, 1977.
+
+\bibitem{VSF00}
+V.\ Voevodsky. Triangulated categories of motives over a field. In
+\textit{Cycles, Transfers, and Motivic Homology Theories}, Ann.\ Math.\ Stud.\
+\textbf{143}, pp.\ 188--238. Princeton Univ.\ Press, 2000.
+
+\bibitem{Voe02b}
+V.\ Voevodsky. Motivic cohomology groups are isomorphic to higher Chow groups in
+any characteristic. \textit{Int.\ Math.\ Res.\ Not.} \textbf{7}:351--355, 2002.
+
+\bibitem{Voe02a}
+V.\ Voevodsky. Open problems in the motivic stable homotopy theory. I.
+In \textit{Motives, Polylogarithms and Hodge Theory, Part~I} (Irvine, CA, 1998),
+Int.\ Press Lect.\ Ser.\ \textbf{3}, pp.\ 3--34. Int.\ Press, Somerville, MA, 2002.
+
+\bibitem{Voe10}
+V.\ Voevodsky. Cancellation theorem. \textit{Doc.\ Math.}, Extra Volume: Andrei A.\
+Suslin Sixtieth Birthday, pp.\ 671--685, 2010.
+
+\bibitem{VSF00b}
+V.\ Voevodsky, A.\ Suslin, E.M.\ Friedlander. \textit{Cycles, Transfers and
+Motivic Homology Theories}. Annals of Mathematics Studies \textbf{143}.
+Princeton Univ.\ Press, 2000.
+
+\end{thebibliography}
+
+\end{document}
